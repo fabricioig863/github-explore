@@ -1,3 +1,5 @@
+import { notifyManager } from '@tanstack/react-query';
+
 import { server } from './msw/server';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -18,6 +20,8 @@ jest.mock('expo-secure-store', () => {
     }),
   };
 });
+
+notifyManager.setScheduler((cb) => cb());
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => server.resetHandlers());
