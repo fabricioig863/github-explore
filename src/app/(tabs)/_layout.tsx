@@ -19,12 +19,20 @@ export default function TabsLayout() {
         tabBarActiveTintColor: theme.colors.fg,
         tabBarInactiveTintColor: theme.colors.fgSubtle,
         tabBarLabelStyle: { fontFamily: 'Geist_500Medium', fontSize: 11 },
+        // Estilo de header herdado das stacks do projeto anterior; cada aba
+        // decide se o exibe.
+        headerStyle: { backgroundColor: theme.colors.bg },
+        headerTintColor: theme.colors.fg,
+        headerTitleStyle: { fontFamily: 'Geist_600SemiBold', fontSize: 16 },
+        headerShadowVisible: false,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Explorar',
+          // Única aba com header: no projeto anterior vinha da ExploreStack.
+          headerShown: true,
           tabBarIcon: ({ color }) => <Compass size={22} color={color} />,
         }}
       />

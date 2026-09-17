@@ -1,0 +1,11 @@
+name = "octolens-oauth"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+# Defina o secret fora do controle de versão:
+#   wrangler secret put GITHUB_CLIENT_SECRET
+[vars]
+GITHUB_CLIENT_ID = "Ov23lid57nB1UoO7Qj3X"
+# Origem permitida pelo CORS. Em dev, o proxy do Expo: https://auth.expo.io
+# Em produção, o deep link do app: octolens://redirect
+ALLOWED_ORIGIN = "*"
