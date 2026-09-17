@@ -8,7 +8,9 @@
     "scheme": "githubexplore",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.c4r3d4c4lur4.githubexplore",
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +19,9 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.c4r3d4c4lur4.githubexplore",
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "output": "static",
@@ -31,6 +35,12 @@
           "backgroundColor": "#208AEF",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
+        }
+      ],
+      [
+        "./plugins/withIosDeploymentTargetFloor",
+        {
+          "deploymentTarget": "15.1"
         }
       ]
     ],
