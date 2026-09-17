@@ -86,6 +86,14 @@ module.exports = defineConfig([
     },
   },
   {
+    files: ['__tests__/**/*.{ts,tsx}'],
+    rules: {
+      // Wrappers de teste são componentes descartáveis e anônimos por design:
+      // nunca aparecem no React DevTools, então display name não agrega ali.
+      'react/display-name': 'off',
+    },
+  },
+  {
     ignores: [
       'node_modules/**',
       '.expo/**',
