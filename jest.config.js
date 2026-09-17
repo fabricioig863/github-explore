@@ -37,5 +37,20 @@ module.exports = {
     '^@/presentation/(.*)$': '<rootDir>/src/presentation/$1',
     '^@/assets/(.*)$': '<rootDir>/assets/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^src/(.*)$': '<rootDir>/src/$1',
+    // msw@2 publica builds condicionais via package.json#exports. O jest-expo
+    // ativa a condição 'react-native', que mapeia `msw/node` para null e bloqueia
+    // o módulo. Apontamos direto para o bundle CJS já compilado.
+    '^msw/node$': '<rootDir>/node_modules/msw/lib/node/index.js',
+    '^msw$': '<rootDir>/node_modules/msw/lib/core/index.js',
   },
+  transform: {
+    '^.+\\.mjs$': 'babel-jest',
+  },
+  // O msw depende transitivamente de pacotes ESM-only. O jest-expo libera
+  // transform sob `.pnpm/` na raiz, mas seu regex volta a ignorar arquivos sob o
+  // segundo node_modules aninhado. A lista abaixo é explícita por isso.
+  transformIgnorePatterns: [
+    'node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|react-navigation|@react-navigation|native-base|msw|@mswjs|@bundled-es-modules|@open-draft|until-async|headers-polyfill|cookie|tough-cookie|outvariant|rettime|strict-event-emitter|graphql|statuses|is-node-process|path-to-regexp|set-cookie-parser|type-fest))',
+  ],
 };
