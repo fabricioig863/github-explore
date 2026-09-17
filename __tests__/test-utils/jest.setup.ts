@@ -23,6 +23,17 @@ jest.mock('expo-secure-store', () => {
 
 notifyManager.setScheduler((cb) => cb());
 
+// expo-router: só o que as telas consomem. Os objetos vêm de um módulo à parte
+// para que os testes possam inspecioná-los e redefinir os parâmetros de rota.
+jest.mock('expo-router', () => {
+  const mock = require('./expoRouter');
+  return {
+    useRouter: () => mock.routerMock,
+    useNavigation: () => mock.navigationMock,
+    useLocalSearchParams: () => mock.getSearchParams(),
+  };
+});
+
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
