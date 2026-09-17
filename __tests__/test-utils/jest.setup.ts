@@ -1,5 +1,9 @@
 import { server } from './msw/server';
 
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+);
+
 // Módulos nativos do fluxo de auth — mockados para rodar fora do device.
 // SecureStore: store em memória com estado real (persiste entre chamadas no arquivo).
 jest.mock('expo-secure-store', () => {
