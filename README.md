@@ -47,14 +47,17 @@ Se você só quer **usar** o app, não precisa clonar nem compilar nada.
 No Android o sistema pede autorização para instalar de fonte desconhecida — é só aceitar
 uma vez.
 
-No iOS, extraia o `.tar.gz` e, com o simulador já aberto:
+No iOS, abra um simulador pelo Xcode e rode, de dentro da pasta onde o `.app` foi
+extraído:
 
 ```bash
+tar -xzf application-*.tar.gz
 xcrun simctl install booted githubexplore.app
 xcrun simctl launch booted com.c4r3d4c4lur4.githubexplore
 ```
 
-Ou arraste o `.app` para a janela do simulador.
+Arrastar o `.app` para a janela do simulador costuma ser ignorado pelo Xcode — use o
+`simctl`.
 
 ---
 
