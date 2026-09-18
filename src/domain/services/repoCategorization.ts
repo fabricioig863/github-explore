@@ -58,6 +58,8 @@ export const COLLECTION_RULES: readonly CollectionRule[] = [
   {
     collection: 'web',
     match: [
+      'web',
+      'website',
       'react',
       'next',
       'nextjs',

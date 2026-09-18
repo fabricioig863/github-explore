@@ -62,6 +62,15 @@ describe('categorizeRepo', () => {
       expect(categorizeRepo(input({ ownerLogin: 'anthropic' }))).toBe('ai-ml');
     });
 
+    it('matches a repository named after the web itself', () => {
+      expect(categorizeRepo(input({ name: 'tem-web-master' }))).toBe('web');
+      expect(categorizeRepo(input({ name: 'my-website' }))).toBe('web');
+    });
+
+    it('does not match "web" inside "webrtc"', () => {
+      expect(categorizeRepo(input({ name: 'webrtc' }))).toBeNull();
+    });
+
     it('does not match by substring: "container" is not AI because of "ai"', () => {
       expect(categorizeRepo(input({ description: 'a container runtime' }))).toBeNull();
     });
