@@ -1,7 +1,7 @@
 import { useTheme } from '@shopify/restyle';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { Settings, Share2 } from 'lucide-react-native';
+import { Settings } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -51,10 +51,6 @@ export function ProfileScreen() {
         >
           <Text variant="h2">Perfil</Text>
           <Box flexDirection="row" alignItems="center" gap="huge">
-            {/* TODO: compartilhar perfil */}
-            <Pressable accessibilityRole="button" accessibilityLabel="Compartilhar perfil">
-              <Share2 size={20} color={theme.colors.fg} />
-            </Pressable>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Configurações"
