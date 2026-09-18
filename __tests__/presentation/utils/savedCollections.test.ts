@@ -1,57 +1,61 @@
 import {
   categorize,
   countByCollection,
+  emptyCounts,
   reposInCollection,
   COLLECTIONS,
 } from '@/presentation/utils/savedCollections';
 
 import { makeSavedRepo } from '../../test-utils/fixtures/savedRepo.fixture';
 
+// A fixture padrão é facebook/react-native, que casa "mobile" pelo nome. Os
+// testes de agregação abaixo precisam de repos neutros para que só o campo sob
+// teste decida a coleção — as regras em si são cobertas em
+// __tests__/domain/repoCategorization.test.ts.
+function neutralRepo(overrides: Parameters<typeof makeSavedRepo>[0]) {
+  return makeSavedRepo({
+    fullName: 'alguem/coisa',
+    name: 'coisa',
+    ownerLogin: 'alguem',
+    ...overrides,
+  });
+}
+
 describe('savedCollections', () => {
   describe('categorize', () => {
-    it('returns null when language is null', () => {
-      expect(categorize(makeSavedRepo({ language: null }))).toBeNull();
+    it('delega ao domínio: usa nome e owner, não só a linguagem', () => {
+      expect(categorize(makeSavedRepo({ language: null }))).toBe('mobile');
+      expect(categorize(neutralRepo({ language: null }))).toBeNull();
     });
 
-    it('returns null when language has no mapping', () => {
-      expect(categorize(makeSavedRepo({ language: 'TypeScript' }))).toBeNull();
-    });
-
-    it('matches Swift/Kotlin/Dart as mobile', () => {
-      expect(categorize(makeSavedRepo({ language: 'Swift' }))).toBe('mobile');
-      expect(categorize(makeSavedRepo({ language: 'Kotlin' }))).toBe('mobile');
-      expect(categorize(makeSavedRepo({ language: 'Dart' }))).toBe('mobile');
-    });
-
-    it('matches Go/Rust/Python as backend', () => {
-      expect(categorize(makeSavedRepo({ language: 'Go' }))).toBe('backend');
-      expect(categorize(makeSavedRepo({ language: 'Rust' }))).toBe('backend');
-      expect(categorize(makeSavedRepo({ language: 'Python' }))).toBe('backend');
-    });
-
-    it('is case-insensitive', () => {
-      expect(categorize(makeSavedRepo({ language: 'swift' }))).toBe('mobile');
-      expect(categorize(makeSavedRepo({ language: 'GO' }))).toBe('backend');
+    it('cai na linguagem quando nome e owner não dizem nada', () => {
+      expect(categorize(neutralRepo({ language: 'Swift' }))).toBe('mobile');
+      expect(categorize(neutralRepo({ language: 'Go' }))).toBe('backend');
     });
   });
 
   describe('countByCollection', () => {
-    it('returns zeros for all collections when input is empty', () => {
-      expect(countByCollection([])).toEqual({ mobile: 0, backend: 0, tools: 0, 'ai-ml': 0 });
+    it('zera todas as coleções quando não há repos', () => {
+      expect(countByCollection([])).toEqual(emptyCounts());
+      expect(Object.keys(emptyCounts()).sort()).toEqual(
+        ['ai-ml', 'backend', 'mobile', 'tools', 'web'].sort(),
+      );
     });
 
-    it('counts each repo into its category and ignores uncategorized', () => {
+    it('conta cada repo na sua coleção e ignora os sem categoria', () => {
       const repos = [
-        makeSavedRepo({ id: 1, language: 'Swift' }),
-        makeSavedRepo({ id: 2, language: 'Kotlin' }),
-        makeSavedRepo({ id: 3, language: 'Go' }),
-        makeSavedRepo({ id: 4, language: 'Shell' }),
-        makeSavedRepo({ id: 5, language: 'Jupyter Notebook' }),
-        makeSavedRepo({ id: 6, language: 'TypeScript' }),
+        neutralRepo({ id: 1, language: 'Swift' }),
+        neutralRepo({ id: 2, language: 'Kotlin' }),
+        neutralRepo({ id: 3, language: 'Go' }),
+        neutralRepo({ id: 4, language: 'Shell' }),
+        neutralRepo({ id: 5, language: 'Jupyter Notebook' }),
+        neutralRepo({ id: 6, topics: ['nextjs'] }),
+        neutralRepo({ id: 7, language: 'Brainfuck' }),
       ];
       expect(countByCollection(repos)).toEqual({
         mobile: 2,
         backend: 1,
+        web: 1,
         tools: 1,
         'ai-ml': 1,
       });
@@ -59,20 +63,30 @@ describe('savedCollections', () => {
   });
 
   describe('reposInCollection', () => {
-    it('filters by collection id', () => {
+    it('filtra por id de coleção', () => {
       const repos = [
-        makeSavedRepo({ id: 1, language: 'Swift' }),
-        makeSavedRepo({ id: 2, language: 'Go' }),
+        neutralRepo({ id: 1, language: 'Swift' }),
+        neutralRepo({ id: 2, language: 'Go' }),
+        neutralRepo({ id: 3, topics: ['react'] }),
       ];
       expect(reposInCollection(repos, 'mobile').map((r) => r.id)).toEqual([1]);
       expect(reposInCollection(repos, 'backend').map((r) => r.id)).toEqual([2]);
+      expect(reposInCollection(repos, 'web').map((r) => r.id)).toEqual([3]);
       expect(reposInCollection(repos, 'tools')).toEqual([]);
     });
   });
 
   describe('COLLECTIONS metadata', () => {
-    it('exposes the four pre-defined collections in order', () => {
-      expect(COLLECTIONS.map((c) => c.id)).toEqual(['mobile', 'backend', 'tools', 'ai-ml']);
+    it('expõe as cinco coleções na ordem de exibição', () => {
+      expect(COLLECTIONS.map((c) => c.id)).toEqual(['mobile', 'backend', 'web', 'tools', 'ai-ml']);
+    });
+
+    it('toda coleção tem aparência preenchida', () => {
+      for (const collection of COLLECTIONS) {
+        expect(collection.title.length).toBeGreaterThan(0);
+        expect(collection.iconColor).toMatch(/^#[0-9A-Fa-f]{6}$/);
+        expect(collection.glyph.length).toBeGreaterThan(0);
+      }
     });
   });
 });

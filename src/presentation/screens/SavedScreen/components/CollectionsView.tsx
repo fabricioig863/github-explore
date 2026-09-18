@@ -14,6 +14,15 @@ import type { Theme } from 'src/infra/theme/lightTheme';
 
 import { CollectionsEmpty } from './CollectionsEmpty';
 
+const CARDS_PER_ROW = 2;
+
+const COLLECTION_ROWS = COLLECTIONS.reduce<(typeof COLLECTIONS)[number][][]>((rows, collection) => {
+  const last = rows[rows.length - 1];
+  if (last === undefined || last.length === CARDS_PER_ROW) rows.push([collection]);
+  else last.push(collection);
+  return rows;
+}, []);
+
 interface CollectionsViewProps {
   counts: Record<CollectionId, number>;
   totalCount: number;
@@ -51,34 +60,26 @@ export function CollectionsView({
           <Box flexDirection="row" alignItems="center" justifyContent="space-between">
             <Text variant="eyebrow">SUAS COLEÇÕES · {COLLECTIONS.length}</Text>
           </Box>
-          <Box flexDirection="row" gap="md" flexWrap="wrap">
-            {COLLECTIONS.slice(0, 2).map((collection) => (
-              <CollectionCard
-                key={collection.id}
-                title={collection.title}
-                count={counts[collection.id]}
-                iconColor={collection.iconColor}
-                glyph={collection.glyph}
-                onPress={() =>
-                  onSelectCollection(activeCollection === collection.id ? null : collection.id)
-                }
-              />
-            ))}
-          </Box>
-          <Box flexDirection="row" gap="md" flexWrap="wrap">
-            {COLLECTIONS.slice(2).map((collection) => (
-              <CollectionCard
-                key={collection.id}
-                title={collection.title}
-                count={counts[collection.id]}
-                iconColor={collection.iconColor}
-                glyph={collection.glyph}
-                onPress={() =>
-                  onSelectCollection(activeCollection === collection.id ? null : collection.id)
-                }
-              />
-            ))}
-          </Box>
+          {/* Linhas de dois: os cards usam flex={1}, então uma linha ímpar
+              esticaria o último card na largura inteira. O Box vazio segura a
+              coluna vaga quando o total de coleções é ímpar. */}
+          {COLLECTION_ROWS.map((row) => (
+            <Box key={row.map((c) => c.id).join('-')} flexDirection="row" gap="md">
+              {row.map((collection) => (
+                <CollectionCard
+                  key={collection.id}
+                  title={collection.title}
+                  count={counts[collection.id]}
+                  iconColor={collection.iconColor}
+                  glyph={collection.glyph}
+                  onPress={() =>
+                    onSelectCollection(activeCollection === collection.id ? null : collection.id)
+                  }
+                />
+              ))}
+              {row.length === 1 ? <Box flex={1} /> : null}
+            </Box>
+          ))}
           <Box paddingTop="huge">
             <Text variant="eyebrow">
               {activeCollection === null

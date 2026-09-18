@@ -11,6 +11,7 @@ import { renderWithProviders } from '../../test-utils/renderWithProviders';
 const ZERO_COUNTS: Record<CollectionId, number> = {
   mobile: 0,
   backend: 0,
+  web: 0,
   tools: 0,
   'ai-ml': 0,
 };
@@ -33,7 +34,7 @@ function makeProps(overrides?: Partial<React.ComponentProps<typeof CollectionsVi
 
 describe('CollectionsView', () => {
   it('renders the four collection cards with counts from props', () => {
-    const props = makeProps({ counts: { mobile: 3, backend: 2, tools: 1, 'ai-ml': 4 } });
+    const props = makeProps({ counts: { mobile: 3, backend: 2, web: 5, tools: 1, 'ai-ml': 4 } });
     renderWithProviders(<CollectionsView {...props} />);
 
     expect(screen.getByText('Mobile')).toBeTruthy();

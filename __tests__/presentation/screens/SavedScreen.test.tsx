@@ -53,16 +53,20 @@ describe('SavedScreen', () => {
     expect(screen.getByText('Recentes')).toBeTruthy();
   });
 
-  it('renders the four pre-defined collections with their counts', async () => {
+  it('renders the five pre-defined collections with their counts', async () => {
+    // fullName/name neutros: a fixture padrão é react-native e cairia em Mobile
+    // pelo nome, mascarando a contagem por linguagem que este teste verifica.
+    const neutral = { fullName: 'alguem/coisa', name: 'coisa', ownerLogin: 'alguem' };
     listMock.mockResolvedValueOnce([
-      makeSavedRepo({ id: 1, language: 'Swift' }),
-      makeSavedRepo({ id: 2, language: 'Kotlin' }),
-      makeSavedRepo({ id: 3, language: 'Go' }),
+      makeSavedRepo({ ...neutral, id: 1, language: 'Swift' }),
+      makeSavedRepo({ ...neutral, id: 2, language: 'Kotlin' }),
+      makeSavedRepo({ ...neutral, id: 3, language: 'Go' }),
     ]);
     renderWithProviders(<SavedScreen />);
 
     await waitFor(() => expect(screen.getByText('Mobile')).toBeTruthy());
     expect(screen.getByText('Backend')).toBeTruthy();
+    expect(screen.getByText('Web')).toBeTruthy();
     expect(screen.getByText('Ferramentas')).toBeTruthy();
     expect(screen.getByText('AI & ML')).toBeTruthy();
     expect(screen.getByText('2 repos')).toBeTruthy();
