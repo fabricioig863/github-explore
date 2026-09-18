@@ -1,5 +1,7 @@
 import { createContainer, type Container } from 'src/infra/di/container';
 import {
+  provideAnalytics,
+  provideCrashReporter,
   provideIssueRepository,
   provideRepoRepository,
   provideSavedReposRepository,
@@ -16,4 +18,6 @@ export const container: Container = createContainer({
   savedReposRepository: provideSavedReposRepository(env),
   userRepository: provideUserRepository(env),
   userPreferencesRepository: provideUserPreferencesRepository(env),
+  analytics: provideAnalytics(env),
+  crashReporter: provideCrashReporter(env),
 });

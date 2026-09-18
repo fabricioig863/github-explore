@@ -5,12 +5,13 @@ import { UnexpectedError } from '@/domain/errors/UnexpectedError';
 import { FakeSavedReposRepository } from '../test-utils/fakes/FakeSavedReposRepository';
 import { makeRepository } from '../test-utils/fixtures/repository.fixture';
 import { makeSavedRepo } from '../test-utils/fixtures/savedRepo.fixture';
+import { FakeAnalytics } from '../test-utils/fakes/FakeAnalytics';
 
 describe('SaveRepoUseCase', () => {
   describe('validação', () => {
     it('rejeita Repository com fullName só whitespace e não chama o repo', async () => {
       const repo = new FakeSavedReposRepository();
-      const useCase = new SaveRepoUseCase(repo);
+      const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute(makeRepository({ fullName: '   ' }))).rejects.toBeInstanceOf(
         InvalidQueryError,
@@ -20,7 +21,7 @@ describe('SaveRepoUseCase', () => {
 
     it('rejeita Repository com fullName vazio e não chama o repo', async () => {
       const repo = new FakeSavedReposRepository();
-      const useCase = new SaveRepoUseCase(repo);
+      const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute(makeRepository({ fullName: '' }))).rejects.toBeInstanceOf(
         InvalidQueryError,
@@ -33,7 +34,7 @@ describe('SaveRepoUseCase', () => {
     it('encaminha o Repository ao repo e devolve o SavedRepo do repo (referência preservada)', async () => {
       const expected = makeSavedRepo();
       const repo = new FakeSavedReposRepository({ save: expected });
-      const useCase = new SaveRepoUseCase(repo);
+      const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
 
       const input = makeRepository({ fullName: 'facebook/react-native' });
       const result = await useCase.execute(input);
@@ -49,7 +50,7 @@ describe('SaveRepoUseCase', () => {
       const repo = new FakeSavedReposRepository();
       const err = new UnexpectedError();
       repo.save.mockRejectedValueOnce(err);
-      const useCase = new SaveRepoUseCase(repo);
+      const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute(makeRepository())).rejects.toBe(err);
     });
@@ -59,7 +60,7 @@ describe('SaveRepoUseCase', () => {
     it('retorna SavedRepo com savedAt como Date (não string)', async () => {
       const expected = makeSavedRepo({ savedAt: new Date('2026-05-17T10:00:00Z') });
       const repo = new FakeSavedReposRepository({ save: expected });
-      const useCase = new SaveRepoUseCase(repo);
+      const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
 
       const result = await useCase.execute(makeRepository());
 

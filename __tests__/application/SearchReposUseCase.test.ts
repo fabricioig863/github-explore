@@ -7,6 +7,7 @@ import { UnexpectedError } from '@/domain/errors/UnexpectedError';
 
 import { FakeRepoRepository } from '../test-utils/fakes/FakeRepoRepository';
 import { makeRepository } from '../test-utils/fixtures/repository.fixture';
+import { FakeAnalytics } from '../test-utils/fakes/FakeAnalytics';
 
 describe('SearchReposUseCase', () => {
   describe('sanitização', () => {
@@ -16,7 +17,7 @@ describe('SearchReposUseCase', () => {
       ['both sides', '   react   ', 'react'],
     ])('trim de query: %s', async (_label, input, expected) => {
       const repo = new FakeRepoRepository();
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       await useCase.execute({ query: input, page: 1 });
 
@@ -27,7 +28,7 @@ describe('SearchReposUseCase', () => {
   describe('validação', () => {
     it('rejeita query só com whitespace e não chama o repo', async () => {
       const repo = new FakeRepoRepository();
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute({ query: '   ', page: 1 })).rejects.toBeInstanceOf(
         InvalidQueryError,
@@ -37,7 +38,7 @@ describe('SearchReposUseCase', () => {
 
     it('rejeita query com 1 char (< 2 após trim) e não chama o repo', async () => {
       const repo = new FakeRepoRepository();
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute({ query: ' a ', page: 1 })).rejects.toBeInstanceOf(
         InvalidQueryError,
@@ -49,7 +50,7 @@ describe('SearchReposUseCase', () => {
   describe('defaults de regra de negócio', () => {
     it('aplica perPage padrão = 20 quando ausente', async () => {
       const repo = new FakeRepoRepository();
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       await useCase.execute({ query: 'react', page: 2 });
 
@@ -58,7 +59,7 @@ describe('SearchReposUseCase', () => {
 
     it('encaminha perPage customizado quando fornecido', async () => {
       const repo = new FakeRepoRepository();
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       await useCase.execute({ query: 'react', page: 1, perPage: 50 });
 
@@ -74,7 +75,7 @@ describe('SearchReposUseCase', () => {
         hasNextPage: false,
       };
       const repo = new FakeRepoRepository({ search: expected });
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       const result = await useCase.execute({ query: 'react', page: 1 });
 
@@ -91,7 +92,7 @@ describe('SearchReposUseCase', () => {
     ])('propaga %s sem reembrulhar', async (_label, error) => {
       const repo = new FakeRepoRepository();
       repo.search.mockRejectedValueOnce(error);
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute({ query: 'react', page: 1 })).rejects.toBe(error);
     });
@@ -105,7 +106,7 @@ describe('SearchReposUseCase', () => {
         hasNextPage: false,
       };
       const repo = new FakeRepoRepository({ search: expected });
-      const useCase = new SearchReposUseCase(repo);
+      const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
       const result = await useCase.execute({ query: 'react', page: 1 });
 

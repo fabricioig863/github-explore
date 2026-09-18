@@ -5,7 +5,11 @@ import { NetworkError } from '@/domain/errors/NetworkError';
 import { NotFoundError } from '@/domain/errors/NotFoundError';
 import { RateLimitError } from '@/domain/errors/RateLimitError';
 import { UnexpectedError } from '@/domain/errors/UnexpectedError';
-import { queryClient } from 'src/infra/query/queryClient';
+import { createQueryClient } from 'src/infra/query/queryClient';
+
+import { FakeCrashReporter } from '../../test-utils/fakes/FakeAnalytics';
+
+const queryClient = createQueryClient(new FakeCrashReporter());
 
 function getRetryFn(client: QueryClient): (count: number, err: unknown) => boolean {
   const retry = client.getDefaultOptions().queries?.retry;

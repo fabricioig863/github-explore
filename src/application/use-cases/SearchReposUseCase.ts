@@ -1,5 +1,6 @@
 import type { Repository } from '@/domain/entities/Repository';
 import { InvalidQueryError } from '@/domain/errors/InvalidQueryError';
+import type { IAnalytics } from '@/domain/observability/IAnalytics';
 import type { IRepoRepository } from '@/domain/repositories/IRepoRepository';
 import type { PaginatedResult } from '@/domain/repositories/Pagination';
 
@@ -10,17 +11,30 @@ export interface SearchReposInput {
 }
 
 export class SearchReposUseCase {
-  constructor(private readonly repoRepository: IRepoRepository) {}
+  constructor(
+    private readonly repoRepository: IRepoRepository,
+    private readonly analytics: IAnalytics,
+  ) {}
 
   async execute(input: SearchReposInput): Promise<PaginatedResult<Repository>> {
     const sanitized = this.sanitize(input.query);
     this.validate(sanitized);
 
-    return this.repoRepository.search({
+    const result = await this.repoRepository.search({
       query: sanitized,
       page: input.page,
       perPage: input.perPage ?? 20,
     });
+
+    if (input.page === 1) {
+      this.analytics.track({
+        name: 'repo_searched',
+        query: sanitized,
+        resultCount: result.totalCount ?? result.items.length,
+      });
+    }
+
+    return result;
   }
 
   private sanitize(query: string): string {

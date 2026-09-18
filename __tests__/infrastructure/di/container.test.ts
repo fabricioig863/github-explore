@@ -1,3 +1,5 @@
+import type { IAnalytics } from '@/domain/observability/IAnalytics';
+import type { ICrashReporter } from '@/domain/observability/ICrashReporter';
 import type { IIssueRepository } from '@/domain/repositories/IIssueRepository';
 import type { IRepoRepository } from '@/domain/repositories/IRepoRepository';
 import type { ISavedReposRepository } from '@/domain/repositories/ISavedReposRepository';
@@ -49,6 +51,8 @@ function makeDeps(overrides: Partial<ContainerDeps> = {}): ContainerDeps {
     savedReposRepository: fakeSavedReposRepository(),
     userRepository: fakeUserRepository(),
     userPreferencesRepository: fakeUserPreferencesRepository(),
+    analytics: { track: jest.fn(), trackScreen: jest.fn() } as IAnalytics,
+    crashReporter: { recordError: jest.fn(), log: jest.fn() } as ICrashReporter,
     ...overrides,
   };
 }

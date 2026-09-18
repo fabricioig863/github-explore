@@ -1,8 +1,12 @@
+import type { IAnalytics } from '@/domain/observability/IAnalytics';
+import type { ICrashReporter } from '@/domain/observability/ICrashReporter';
 import type { IIssueRepository } from '@/domain/repositories/IIssueRepository';
 import type { IRepoRepository } from '@/domain/repositories/IRepoRepository';
 import type { ISavedReposRepository } from '@/domain/repositories/ISavedReposRepository';
 import type { IUserPreferencesRepository } from '@/domain/repositories/IUserPreferencesRepository';
 import type { IUserRepository } from '@/domain/repositories/IUserRepository';
+import { ConsoleAnalytics, ConsoleCrashReporter } from 'src/infra/observability/ConsoleAnalytics';
+import { NoopAnalytics, NoopCrashReporter } from 'src/infra/observability/NoopAnalytics';
 import { AsyncStorageSavedReposRepository } from 'src/infra/repositories/AsyncStorageSavedReposRepository';
 import { AsyncStorageUserPreferencesRepository } from 'src/infra/repositories/AsyncStorageUserPreferencesRepository';
 import { GitHubIssueRepository } from 'src/infra/repositories/GitHubIssueRepository';
@@ -16,10 +20,12 @@ import { InMemoryUserRepository } from 'src/infra/repositories/InMemoryUserRepos
 
 export interface DiEnv {
   USE_MOCK: boolean;
+  DEBUG_ANALYTICS: boolean;
 }
 
 export const readDiEnv = (): DiEnv => ({
   USE_MOCK: process.env.EXPO_PUBLIC_USE_MOCK !== 'false',
+  DEBUG_ANALYTICS: process.env.EXPO_PUBLIC_DEBUG_ANALYTICS === 'true',
 });
 
 export const provideRepoRepository = (env: DiEnv): IRepoRepository =>
@@ -38,3 +44,9 @@ export const provideUserPreferencesRepository = (env: DiEnv): IUserPreferencesRe
   env.USE_MOCK
     ? new InMemoryUserPreferencesRepository()
     : new AsyncStorageUserPreferencesRepository();
+
+export const provideAnalytics = (env: DiEnv): IAnalytics =>
+  env.DEBUG_ANALYTICS ? new ConsoleAnalytics() : new NoopAnalytics();
+
+export const provideCrashReporter = (env: DiEnv): ICrashReporter =>
+  env.DEBUG_ANALYTICS ? new ConsoleCrashReporter() : new NoopCrashReporter();

@@ -3,12 +3,13 @@ import { InvalidQueryError } from '@/domain/errors/InvalidQueryError';
 import { UnexpectedError } from '@/domain/errors/UnexpectedError';
 
 import { FakeSavedReposRepository } from '../test-utils/fakes/FakeSavedReposRepository';
+import { FakeAnalytics } from '../test-utils/fakes/FakeAnalytics';
 
 describe('UnsaveRepoUseCase', () => {
   describe('sanitização', () => {
     it('trim fullName antes de delegar', async () => {
       const repo = new FakeSavedReposRepository();
-      const useCase = new UnsaveRepoUseCase(repo);
+      const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
       await useCase.execute('  facebook/react-native  ');
 
@@ -19,7 +20,7 @@ describe('UnsaveRepoUseCase', () => {
   describe('validação', () => {
     it('rejeita fullName só whitespace e não chama o repo', async () => {
       const repo = new FakeSavedReposRepository();
-      const useCase = new UnsaveRepoUseCase(repo);
+      const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute('   ')).rejects.toBeInstanceOf(InvalidQueryError);
       expect(repo.unsave).not.toHaveBeenCalled();
@@ -27,7 +28,7 @@ describe('UnsaveRepoUseCase', () => {
 
     it('rejeita fullName vazio e não chama o repo', async () => {
       const repo = new FakeSavedReposRepository();
-      const useCase = new UnsaveRepoUseCase(repo);
+      const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute('')).rejects.toBeInstanceOf(InvalidQueryError);
       expect(repo.unsave).not.toHaveBeenCalled();
@@ -37,7 +38,7 @@ describe('UnsaveRepoUseCase', () => {
   describe('pass-through de retorno', () => {
     it('resolve void (não retorna valor) e chama o repo exatamente uma vez', async () => {
       const repo = new FakeSavedReposRepository();
-      const useCase = new UnsaveRepoUseCase(repo);
+      const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
       const result = await useCase.execute('foo/bar');
 
@@ -51,7 +52,7 @@ describe('UnsaveRepoUseCase', () => {
       const repo = new FakeSavedReposRepository();
       const err = new UnexpectedError();
       repo.unsave.mockRejectedValueOnce(err);
-      const useCase = new UnsaveRepoUseCase(repo);
+      const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
       await expect(useCase.execute('foo/bar')).rejects.toBe(err);
     });

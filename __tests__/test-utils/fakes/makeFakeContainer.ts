@@ -1,7 +1,12 @@
 import type { Container } from 'src/infra/di/container';
 
-export type FakeContainer = {
-  [K in keyof Container]: { execute: jest.Mock };
+import { FakeAnalytics, FakeCrashReporter } from './FakeAnalytics';
+
+type UseCaseKeys = Exclude<keyof Container, 'analytics' | 'crashReporter'>;
+
+export type FakeContainer = { [K in UseCaseKeys]: { execute: jest.Mock } } & {
+  analytics: FakeAnalytics;
+  crashReporter: FakeCrashReporter;
 };
 
 export const makeFakeContainer = (): FakeContainer => ({
@@ -18,4 +23,6 @@ export const makeFakeContainer = (): FakeContainer => ({
   getUserProfileUseCase: { execute: jest.fn() },
   getUserPreferencesUseCase: { execute: jest.fn() },
   updateUserPreferencesUseCase: { execute: jest.fn() },
+  analytics: new FakeAnalytics(),
+  crashReporter: new FakeCrashReporter(),
 });
