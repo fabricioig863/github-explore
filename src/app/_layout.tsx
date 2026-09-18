@@ -48,6 +48,10 @@ function RootNavigation() {
         headerBackButtonDisplayMode: 'minimal',
       }}
     >
+      {/* Fora dos blocos protegidos: o retorno do OAuth chega exatamente na
+          transição entre deslogado e logado, e precisa existir nos dois lados. */}
+      <Stack.Screen name="redirect" />
+
       <Stack.Protected guard={isAuthenticated}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen

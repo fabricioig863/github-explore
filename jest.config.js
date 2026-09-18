@@ -51,6 +51,6 @@ module.exports = {
   // transform sob `.pnpm/` na raiz, mas seu regex volta a ignorar arquivos sob o
   // segundo node_modules aninhado. A lista abaixo é explícita por isso.
   transformIgnorePatterns: [
-    'node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|lucide-react-native|react-navigation|@react-navigation|native-base|msw|@mswjs|@bundled-es-modules|@open-draft|until-async|headers-polyfill|cookie|tough-cookie|outvariant|rettime|strict-event-emitter|graphql|statuses|is-node-process|path-to-regexp|set-cookie-parser|type-fest))',
+    'node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|lucide-react-native|react-navigation|@react-navigation|native-base|msw|@mswjs|@bundled-es-modules|@open-draft|until-async|headers-polyfill|cookie|tough-cookie|outvariant|rettime|strict-event-emitter|graphql|statuses|is-node-process|path-to-regexp|set-cookie-parser|type-fest|standard-navigation))',
   ],
 };
