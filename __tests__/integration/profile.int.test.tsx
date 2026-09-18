@@ -19,7 +19,7 @@ describe('vertical slice: ProfileScreen → userQueries → InMemory repos', () 
     topReposSpy.mockRestore();
   });
 
-  it('abre no login padrão, mostrando perfil e repos em destaque', async () => {
+  it('opens on the default login, showing the profile and pinned repos', async () => {
     renderWithProviders(<ProfileScreen />);
 
     await screen.findByText('The Octocat', {}, { timeout: 2000 });
@@ -28,7 +28,7 @@ describe('vertical slice: ProfileScreen → userQueries → InMemory repos', () 
     await waitFor(() => expect(topReposSpy).toHaveBeenCalledWith('octocat'), { timeout: 2000 });
   });
 
-  it('buscar outro usuário refaz as duas consultas com o novo login', async () => {
+  it('searching another user re-runs both queries with the new login', async () => {
     renderWithProviders(<ProfileScreen />);
     await screen.findByText('The Octocat', {}, { timeout: 2000 });
 
@@ -40,7 +40,7 @@ describe('vertical slice: ProfileScreen → userQueries → InMemory repos', () 
     await waitFor(() => expect(topReposSpy).toHaveBeenCalledWith('torvalds'), { timeout: 2000 });
   });
 
-  it('ignora busca em branco', async () => {
+  it('ignores a blank search', async () => {
     renderWithProviders(<ProfileScreen />);
     await screen.findByText('The Octocat', {}, { timeout: 2000 });
     profileSpy.mockClear();

@@ -6,8 +6,8 @@ import { FakeSavedReposRepository } from '../test-utils/fakes/FakeSavedReposRepo
 import { FakeAnalytics } from '../test-utils/fakes/FakeAnalytics';
 
 describe('UnsaveRepoUseCase', () => {
-  describe('sanitização', () => {
-    it('trim fullName antes de delegar', async () => {
+  describe('sanitization', () => {
+    it('trims fullName before delegating', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
@@ -17,8 +17,8 @@ describe('UnsaveRepoUseCase', () => {
     });
   });
 
-  describe('validação', () => {
-    it('rejeita fullName só whitespace e não chama o repo', async () => {
+  describe('validation', () => {
+    it('rejects a whitespace-only fullName without calling the repository', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
@@ -26,7 +26,7 @@ describe('UnsaveRepoUseCase', () => {
       expect(repo.unsave).not.toHaveBeenCalled();
     });
 
-    it('rejeita fullName vazio e não chama o repo', async () => {
+    it('rejects an empty fullName without calling the repository', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
@@ -35,8 +35,8 @@ describe('UnsaveRepoUseCase', () => {
     });
   });
 
-  describe('pass-through de retorno', () => {
-    it('resolve void (não retorna valor) e chama o repo exatamente uma vez', async () => {
+  describe('return pass-through', () => {
+    it('resolves to void and calls the repository exactly once', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new UnsaveRepoUseCase(repo, new FakeAnalytics());
 
@@ -47,8 +47,8 @@ describe('UnsaveRepoUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
-    it('propaga UnexpectedError do repo sem reembrulhar', async () => {
+  describe('typed error propagation', () => {
+    it('propagates UnexpectedError without re-wrapping it', async () => {
       const repo = new FakeSavedReposRepository();
       const err = new UnexpectedError();
       repo.unsave.mockRejectedValueOnce(err);

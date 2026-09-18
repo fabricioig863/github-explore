@@ -7,8 +7,8 @@ import { UnexpectedError } from '@/domain/errors/UnexpectedError';
 import { FakeIssueRepository } from '../test-utils/fakes/FakeIssueRepository';
 
 describe('CountIssuesUseCase', () => {
-  describe('sanitização', () => {
-    it('trim owner e repo antes de delegar', async () => {
+  describe('sanitization', () => {
+    it('trims owner and repo before delegating', async () => {
       const repo = new FakeIssueRepository({ count: 42 });
       const useCase = new CountIssuesUseCase(repo);
 
@@ -20,7 +20,7 @@ describe('CountIssuesUseCase', () => {
   });
 
   describe('state', () => {
-    it('usa state "open" por padrão', async () => {
+    it('uses state "open" by default', async () => {
       const repo = new FakeIssueRepository({ count: 1 });
       const useCase = new CountIssuesUseCase(repo);
 
@@ -29,7 +29,7 @@ describe('CountIssuesUseCase', () => {
       expect(repo.count).toHaveBeenCalledWith({ owner: 'foo', repo: 'bar', state: 'open' });
     });
 
-    it('encaminha state "closed" quando fornecido', async () => {
+    it('forwards state "closed" when provided', async () => {
       const repo = new FakeIssueRepository({ count: 1 });
       const useCase = new CountIssuesUseCase(repo);
 
@@ -39,8 +39,8 @@ describe('CountIssuesUseCase', () => {
     });
   });
 
-  describe('validação', () => {
-    it('rejeita owner vazio e não chama o repo', async () => {
+  describe('validation', () => {
+    it('rejects an empty owner without calling the repository', async () => {
       const repo = new FakeIssueRepository();
       const useCase = new CountIssuesUseCase(repo);
 
@@ -50,7 +50,7 @@ describe('CountIssuesUseCase', () => {
       expect(repo.count).not.toHaveBeenCalled();
     });
 
-    it('rejeita repo vazio (whitespace) e não chama o repo', async () => {
+    it('rejects a whitespace-only repo without calling the repository', async () => {
       const repo = new FakeIssueRepository();
       const useCase = new CountIssuesUseCase(repo);
 
@@ -61,7 +61,7 @@ describe('CountIssuesUseCase', () => {
     });
   });
 
-  describe('pass-through de retorno', () => {
+  describe('return pass-through', () => {
     it.each([
       ['zero', 0],
       ['valor pequeno', 7],
@@ -76,7 +76,7 @@ describe('CountIssuesUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
+  describe('typed error propagation', () => {
     it.each([
       ['UnexpectedError', new UnexpectedError()],
       ['RateLimitError', new RateLimitError()],
@@ -90,8 +90,8 @@ describe('CountIssuesUseCase', () => {
     });
   });
 
-  describe('não vaza tipos da infra', () => {
-    it('retorna number puro (não objeto DTO {total_count})', async () => {
+  describe('does not leak infrastructure types', () => {
+    it('returns a plain number, not the {total_count} DTO', async () => {
       const repo = new FakeIssueRepository({ count: 73 });
       const useCase = new CountIssuesUseCase(repo);
 

@@ -5,8 +5,8 @@ import { FakeSavedReposRepository } from '../test-utils/fakes/FakeSavedReposRepo
 import { makeSavedRepo } from '../test-utils/fixtures/savedRepo.fixture';
 
 describe('ListSavedReposUseCase', () => {
-  describe('pass-through de retorno', () => {
-    it('devolve o array do repo sem mutar (referência preservada)', async () => {
+  describe('return pass-through', () => {
+    it('returns the array untouched, preserving the reference', async () => {
       const items = [
         makeSavedRepo({ id: 1 }),
         makeSavedRepo({ id: 2, fullName: 'a/b', name: 'b' }),
@@ -20,7 +20,7 @@ describe('ListSavedReposUseCase', () => {
       expect(repo.list).toHaveBeenCalledTimes(1);
     });
 
-    it('devolve array vazio quando nada está salvo', async () => {
+    it('returns an empty array when nothing is saved', async () => {
       const repo = new FakeSavedReposRepository({ list: [] });
       const useCase = new ListSavedReposUseCase(repo);
 
@@ -28,8 +28,8 @@ describe('ListSavedReposUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
-    it('propaga UnexpectedError do repo sem reembrulhar', async () => {
+  describe('typed error propagation', () => {
+    it('propagates UnexpectedError without re-wrapping it', async () => {
       const repo = new FakeSavedReposRepository();
       const err = new UnexpectedError();
       repo.list.mockRejectedValueOnce(err);
@@ -39,8 +39,8 @@ describe('ListSavedReposUseCase', () => {
     });
   });
 
-  describe('não vaza tipos da infra', () => {
-    it('retorna SavedRepo[] com savedAt como Date em cada item', async () => {
+  describe('does not leak infrastructure types', () => {
+    it('returns savedAt as a Date on every item', async () => {
       const items = [
         makeSavedRepo({ id: 1, savedAt: new Date('2026-05-17T10:00:00Z') }),
         makeSavedRepo({ id: 2, savedAt: new Date('2026-05-18T10:00:00Z') }),

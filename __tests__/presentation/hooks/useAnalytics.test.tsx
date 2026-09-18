@@ -28,20 +28,20 @@ describe('useTrackScreen', () => {
     analytics.trackScreen.mockClear();
   });
 
-  it('registra a tela ao montar', () => {
+  it('tracks the screen on mount', () => {
     render(<ScreenProbe screen="explore" />);
 
     expect(analytics.trackScreen).toHaveBeenCalledWith('explore');
   });
 
-  it('não registra de novo em re-render com a mesma tela', () => {
+  it('does not track again on re-render with the same screen', () => {
     const { rerender } = render(<ScreenProbe screen="explore" />);
     rerender(<ScreenProbe screen="explore" />);
 
     expect(analytics.trackScreen).toHaveBeenCalledTimes(1);
   });
 
-  it('registra de novo quando a tela muda', () => {
+  it('tracks again when the screen changes', () => {
     const { rerender } = render(<ScreenProbe screen="explore" />);
     rerender(<ScreenProbe screen="profile" />);
 
@@ -55,13 +55,13 @@ describe('useTrackEvent', () => {
     analytics.track.mockClear();
   });
 
-  it('emite o evento ao montar', () => {
+  it('emits the event on mount', () => {
     render(<EventProbe login="octocat" />);
 
     expect(analytics.track).toHaveBeenCalledWith({ name: 'profile_viewed', login: 'octocat' });
   });
 
-  it('não repete o mesmo evento em re-render', () => {
+  it('does not repeat the same event on re-render', () => {
     const { rerender } = render(<EventProbe login="octocat" />);
     rerender(<EventProbe login="octocat" />);
     rerender(<EventProbe login="octocat" />);
@@ -69,7 +69,7 @@ describe('useTrackEvent', () => {
     expect(analytics.track).toHaveBeenCalledTimes(1);
   });
 
-  it('emite de novo quando o conteúdo do evento muda', () => {
+  it('emits again when the event payload changes', () => {
     const { rerender } = render(<EventProbe login="octocat" />);
     rerender(<EventProbe login="torvalds" />);
 

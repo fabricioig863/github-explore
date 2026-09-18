@@ -10,7 +10,7 @@ import { makeRepository } from '../test-utils/fixtures/repository.fixture';
 import { FakeAnalytics } from '../test-utils/fakes/FakeAnalytics';
 
 describe('SearchReposUseCase', () => {
-  describe('sanitização', () => {
+  describe('sanitization', () => {
     it.each([
       ['leading whitespace', ' react', 'react'],
       ['trailing whitespace', 'react ', 'react'],
@@ -25,8 +25,8 @@ describe('SearchReposUseCase', () => {
     });
   });
 
-  describe('validação', () => {
-    it('rejeita query só com whitespace e não chama o repo', async () => {
+  describe('validation', () => {
+    it('rejects a whitespace-only query without calling the repository', async () => {
       const repo = new FakeRepoRepository();
       const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
@@ -36,7 +36,7 @@ describe('SearchReposUseCase', () => {
       expect(repo.search).not.toHaveBeenCalled();
     });
 
-    it('rejeita query com 1 char (< 2 após trim) e não chama o repo', async () => {
+    it('rejects a single-character query without calling the repository', async () => {
       const repo = new FakeRepoRepository();
       const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
@@ -47,8 +47,8 @@ describe('SearchReposUseCase', () => {
     });
   });
 
-  describe('defaults de regra de negócio', () => {
-    it('aplica perPage padrão = 20 quando ausente', async () => {
+  describe('business rule defaults', () => {
+    it('defaults perPage to 20 when absent', async () => {
       const repo = new FakeRepoRepository();
       const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
@@ -57,7 +57,7 @@ describe('SearchReposUseCase', () => {
       expect(repo.search).toHaveBeenCalledWith({ query: 'react', page: 2, perPage: 20 });
     });
 
-    it('encaminha perPage customizado quando fornecido', async () => {
+    it('forwards a custom perPage when provided', async () => {
       const repo = new FakeRepoRepository();
       const useCase = new SearchReposUseCase(repo, new FakeAnalytics());
 
@@ -67,8 +67,8 @@ describe('SearchReposUseCase', () => {
     });
   });
 
-  describe('pass-through de retorno', () => {
-    it('devolve PaginatedResult do repo sem mutar (referência preservada)', async () => {
+  describe('return pass-through', () => {
+    it('returns the PaginatedResult untouched, preserving the reference', async () => {
       const expected = {
         items: [makeRepository({ id: 1 }), makeRepository({ id: 2 })],
         totalCount: 2,
@@ -83,7 +83,7 @@ describe('SearchReposUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
+  describe('typed error propagation', () => {
     it.each([
       ['NetworkError', new NetworkError()],
       ['RateLimitError', new RateLimitError()],
@@ -98,8 +98,8 @@ describe('SearchReposUseCase', () => {
     });
   });
 
-  describe('não vaza tipos da infra', () => {
-    it('retorna Repository com pushedAt já como Date (não string ISO crua)', async () => {
+  describe('does not leak infrastructure types', () => {
+    it('returns pushedAt as a Date, not a raw ISO string', async () => {
       const expected = {
         items: [makeRepository({ pushedAt: new Date('2026-01-15T10:00:00Z') })],
         totalCount: 1,

@@ -4,7 +4,7 @@ import { UpdateUserPreferencesUseCase } from '@/application/use-cases/UpdateUser
 import { FakeUserPreferencesRepository } from '../test-utils/fakes/FakeUserPreferencesRepository';
 
 describe('GetUserPreferencesUseCase', () => {
-  it('delega para o repo e devolve as preferências', async () => {
+  it('delegates to the repository and returns the preferences', async () => {
     const repo = new FakeUserPreferencesRepository({ get: { localAvatarUri: 'file://a.jpg' } });
     const useCase = new GetUserPreferencesUseCase(repo);
 
@@ -16,7 +16,7 @@ describe('GetUserPreferencesUseCase', () => {
 });
 
 describe('UpdateUserPreferencesUseCase', () => {
-  it('encaminha o patch para o repo e devolve o resultado', async () => {
+  it('forwards the patch and returns the result', async () => {
     const repo = new FakeUserPreferencesRepository({ update: { localAvatarUri: 'file://b.jpg' } });
     const useCase = new UpdateUserPreferencesUseCase(repo);
 
@@ -26,7 +26,7 @@ describe('UpdateUserPreferencesUseCase', () => {
     expect(prefs).toEqual({ localAvatarUri: 'file://b.jpg' });
   });
 
-  it('aceita patch com null (remover avatar local)', async () => {
+  it('accepts a null patch to clear the local avatar', async () => {
     const repo = new FakeUserPreferencesRepository();
     const useCase = new UpdateUserPreferencesUseCase(repo);
 

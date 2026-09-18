@@ -31,9 +31,9 @@ function makeRepoDto(overrides: Partial<Record<string, unknown>> = {}) {
   };
 }
 
-describe('GitHubUserRepository (integração HTTP via msw)', () => {
+describe('GitHubUserRepository (HTTP integration via msw)', () => {
   describe('listUserRepos', () => {
-    it('GET /users/:login/repos com sort=updated/page/per_page e mapeia DTO->domínio', async () => {
+    it('sends GET /users/:login/repos with sort, page and per_page, and maps the DTOs', async () => {
       let capturedUrl: URL | undefined;
       server.use(
         http.get(`${GITHUB_BASE_URL}/users/:login/repos`, ({ request }) => {
@@ -76,7 +76,7 @@ describe('GitHubUserRepository (integração HTTP via msw)', () => {
       expect(result.hasNextPage).toBe(expected);
     });
 
-    it('em 404 levanta NotFoundError com contexto "Repositórios de login"', async () => {
+    it('raises NotFoundError on 404 with the user-repos resource context', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/users/:login/repos`, () =>
           HttpResponse.json({ message: 'not found' }, { status: 404 }),
@@ -94,7 +94,7 @@ describe('GitHubUserRepository (integração HTTP via msw)', () => {
       });
     });
 
-    it('em erro de rede levanta NetworkError', async () => {
+    it('raises NetworkError on a network failure', async () => {
       server.use(http.get(`${GITHUB_BASE_URL}/users/:login/repos`, () => HttpResponse.error()));
 
       await expect(
@@ -105,7 +105,7 @@ describe('GitHubUserRepository (integração HTTP via msw)', () => {
 });
 
 describe('GitHubUserRepository.getUser', () => {
-  it('mapeia o perfil público de /users/{login}', async () => {
+  it('maps the public profile from /users/:login', async () => {
     server.use(
       http.get(`${GITHUB_BASE_URL}/users/octocat`, () =>
         HttpResponse.json({
@@ -137,7 +137,7 @@ describe('GitHubUserRepository.getUser', () => {
     });
   });
 
-  it('trata email ausente no payload público como null', async () => {
+  it('treats a missing email in the public payload as null', async () => {
     server.use(
       http.get(`${GITHUB_BASE_URL}/users/octocat`, () =>
         HttpResponse.json({
@@ -158,7 +158,7 @@ describe('GitHubUserRepository.getUser', () => {
     expect(user.email).toBeNull();
   });
 
-  it('converte 404 em NotFoundError', async () => {
+  it('maps 404 to NotFoundError', async () => {
     server.use(
       http.get(`${GITHUB_BASE_URL}/users/fantasma`, () =>
         HttpResponse.json({ message: 'Not Found' }, { status: 404 }),

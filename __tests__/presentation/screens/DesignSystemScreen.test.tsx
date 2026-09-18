@@ -31,7 +31,7 @@ function renderWithTheme(ui: ReactElement, theme: Theme) {
 }
 
 describe('DesignSystemScreen', () => {
-  it('renderiza todas as seções no tema claro', () => {
+  it('renders every section in the light theme', () => {
     const { getByText } = renderWithTheme(<DesignSystemScreen />, lightTheme);
 
     expect(getByText('Design System')).toBeTruthy();
@@ -44,7 +44,7 @@ describe('DesignSystemScreen', () => {
     expect(getByText('Display')).toBeTruthy();
   });
 
-  it('renderiza no tema escuro sem quebrar', () => {
+  it('renders in the dark theme without breaking', () => {
     const { getByText } = renderWithTheme(<DesignSystemScreen />, darkTheme);
 
     expect(getByText('Botões')).toBeTruthy();

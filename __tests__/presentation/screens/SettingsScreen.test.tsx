@@ -27,7 +27,7 @@ describe('SettingsScreen', () => {
     await accessTokenStorage.clearToken();
   });
 
-  it('sem token, apresenta o limite anônimo e o campo para colar um', async () => {
+  it('shows the anonymous limit and the input when there is no token', async () => {
     renderWithProviders(<SettingsScreen />);
 
     expect(await screen.findByText('Token de acesso')).toBeTruthy();
@@ -36,7 +36,7 @@ describe('SettingsScreen', () => {
     expect(screen.getByLabelText('Personal Access Token do GitHub')).toBeTruthy();
   });
 
-  it('salvar um token persiste no armazenamento seguro', async () => {
+  it('saving a token persists it in secure storage', async () => {
     renderWithProviders(<SettingsScreen />);
 
     const input = await screen.findByLabelText('Personal Access Token do GitHub');
@@ -48,7 +48,7 @@ describe('SettingsScreen', () => {
     });
   });
 
-  it('com token salvo, troca o campo pela opção de remover', async () => {
+  it('swaps the input for a remove action once a token is stored', async () => {
     await accessTokenStorage.setToken('ghp_ja_configurado');
     renderWithProviders(<SettingsScreen />);
 
@@ -63,13 +63,13 @@ describe('SettingsScreen', () => {
     });
   });
 
-  it('mantém o controle de tema', async () => {
+  it('keeps the theme control', async () => {
     renderWithProviders(<SettingsScreen />);
 
     expect(await screen.findByText('Tema escuro')).toBeTruthy();
   });
 
-  it('não oferece mais sair da conta', async () => {
+  it('no longer offers a sign-out action', async () => {
     renderWithProviders(<SettingsScreen />);
 
     await screen.findByText('Token de acesso');

@@ -9,14 +9,14 @@ function makeUseCase(repo: FakeUserRepository) {
 }
 
 describe('GetTopUserReposUseCase', () => {
-  it('busca a página 1 com perPage 30', async () => {
+  it('fetches page 1 with perPage 30', async () => {
     const repo = new FakeUserRepository();
     await makeUseCase(repo).execute('octocat');
 
     expect(repo.listUserRepos).toHaveBeenCalledWith({ login: 'octocat', page: 1, perPage: 30 });
   });
 
-  it('ordena por estrelas desc e fatia no limite (default 6)', async () => {
+  it('sorts by stars descending and slices at the limit (default 6)', async () => {
     const items = [
       makeRepository({ id: 1, name: 'a', stars: 10 }),
       makeRepository({ id: 2, name: 'b', stars: 500 }),

@@ -52,17 +52,17 @@ describe('vertical slice: repoQueries.search → SearchReposUseCase → InMemory
   });
 
   describe('enabled gate', () => {
-    it('com 1 char trimado, NÃO dispara o use case', () => {
+    it('does not trigger the use case with a single trimmed character', () => {
       renderHook(() => useInfiniteQuery(repoQueries.search('a')), { wrapper: makeWrapper() });
       expect(execSpy).not.toHaveBeenCalled();
     });
 
-    it('com 0 chars após trim (whitespace), NÃO dispara o use case', () => {
+    it('does not trigger the use case when trimming leaves nothing', () => {
       renderHook(() => useInfiniteQuery(repoQueries.search('   ')), { wrapper: makeWrapper() });
       expect(execSpy).not.toHaveBeenCalled();
     });
 
-    it('com 2+ chars trimados, dispara o use case ponta-a-ponta', async () => {
+    it('triggers the use case end to end with two or more trimmed characters', async () => {
       const { result } = renderHook(() => useInfiniteQuery(repoQueries.search('test')), {
         wrapper: makeWrapper(),
       });
@@ -73,8 +73,8 @@ describe('vertical slice: repoQueries.search → SearchReposUseCase → InMemory
     });
   });
 
-  describe('trim não duplica entre presentation e application', () => {
-    it('query "  test  " chega no use case já trimada (single layer de trim)', async () => {
+  describe('trimming is not duplicated between presentation and application', () => {
+    it('the query reaches the use case already trimmed, in a single layer', async () => {
       const { result } = renderHook(() => useInfiniteQuery(repoQueries.search('  test  ')), {
         wrapper: makeWrapper(),
       });
@@ -86,8 +86,8 @@ describe('vertical slice: repoQueries.search → SearchReposUseCase → InMemory
     });
   });
 
-  describe('fetchNextPage incrementa page e honra contrato PaginatedResult', () => {
-    it('cobre página 1 (20 itens, hasNextPage=true) → fetchNextPage → página 2 (5 itens, hasNextPage=false)', async () => {
+  describe('fetchNextPage increments the page and honours the PaginatedResult contract', () => {
+    it('covers page 1 with hasNextPage=true, then page 2 with hasNextPage=false', async () => {
       const { result } = renderHook(() => useInfiniteQuery(repoQueries.search('test')), {
         wrapper: makeWrapper(),
       });

@@ -33,7 +33,7 @@ describe('useToggleSaveRepo', () => {
     unsaveMock.mockResolvedValue(undefined);
   });
 
-  it('quando isCurrentlySaved=false, chama saveRepoUseCase e resolve para true', async () => {
+  it('calls saveRepoUseCase and resolves to true when not currently saved', async () => {
     const { Wrapper } = makeWrapper();
     const { result } = renderHook(() => useToggleSaveRepo(), { wrapper: Wrapper });
 
@@ -49,7 +49,7 @@ describe('useToggleSaveRepo', () => {
     expect(result.current.data).toBe(true);
   });
 
-  it('quando isCurrentlySaved=true, chama unsaveRepoUseCase com fullName e resolve para false', async () => {
+  it('calls unsaveRepoUseCase and resolves to false when currently saved', async () => {
     const { Wrapper } = makeWrapper();
     const { result } = renderHook(() => useToggleSaveRepo(), { wrapper: Wrapper });
 
@@ -65,7 +65,7 @@ describe('useToggleSaveRepo', () => {
     expect(result.current.data).toBe(false);
   });
 
-  it('invalida o cache de savedRepos após sucesso (save ou unsave)', async () => {
+  it('invalidates the savedRepos cache after a successful save or unsave', async () => {
     const { Wrapper, invalidateSpy } = makeWrapper();
     const { result } = renderHook(() => useToggleSaveRepo(), { wrapper: Wrapper });
 
@@ -79,7 +79,7 @@ describe('useToggleSaveRepo', () => {
     await waitFor(() => expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['savedRepos'] }));
   });
 
-  it('propaga erro do use case sem engolir', async () => {
+  it('propagates the use case error instead of swallowing it', async () => {
     const err = new Error('disk full');
     saveMock.mockRejectedValueOnce(err);
     const { Wrapper } = makeWrapper();

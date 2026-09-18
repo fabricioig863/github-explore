@@ -4,7 +4,7 @@ import { generatePlaceholderContributions } from '@/presentation/utils/contribut
 import { renderWithProviders } from '../../test-utils/renderWithProviders';
 
 describe('ContributionsCard', () => {
-  it('renderiza total e o selo "Em breve" sem acessar rede', () => {
+  it('renders the total and the "Em breve" badge without hitting the network', () => {
     const days = generatePlaceholderContributions('octocat');
     const { getByText } = renderWithProviders(<ContributionsCard days={days} />);
 

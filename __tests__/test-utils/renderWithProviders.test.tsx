@@ -7,13 +7,13 @@ function Probe() {
 }
 
 describe('renderWithProviders / createTestQueryClient', () => {
-  it('cria um QueryClient novo por chamada (não compartilha referência)', () => {
+  it('creates a fresh QueryClient per call, sharing no reference', () => {
     const a = createTestQueryClient();
     const b = createTestQueryClient();
     expect(a).not.toBe(b);
   });
 
-  it('não vaza dados entre dois renders independentes', () => {
+  it('does not leak data between two independent renders', () => {
     const clientA = createTestQueryClient();
     const clientB = createTestQueryClient();
 
@@ -26,7 +26,7 @@ describe('renderWithProviders / createTestQueryClient', () => {
     expect(clientB.getQueryData(['shared-key'])).toBeUndefined();
   });
 
-  it('renderWithProviders sem queryClient explícito instancia um próprio (isolado do escopo do teste)', () => {
+  it('renderWithProviders builds its own isolated client when none is given', () => {
     const external = createTestQueryClient();
     external.setQueryData(['external-key'], { from: 'external' });
 

@@ -7,9 +7,9 @@ import { createHttpClient } from 'src/infra/http/httpClient';
 
 import { GITHUB_BASE_URL, server } from '../../test-utils/msw/server';
 
-describe('httpClient (integração HTTP via msw)', () => {
-  describe('headers padrão', () => {
-    it('envia X-GitHub-Api-Version: 2022-11-28 em toda request', async () => {
+describe('httpClient (HTTP integration via msw)', () => {
+  describe('default headers', () => {
+    it('sends X-GitHub-Api-Version: 2022-11-28 on every request', async () => {
       let capturedVersion: string | null = null;
       server.use(
         http.get(`${GITHUB_BASE_URL}/ping`, ({ request }) => {
@@ -38,12 +38,12 @@ describe('httpClient (integração HTTP via msw)', () => {
     });
   });
 
-  describe('autenticação via access token opcional (accessTokenStorage)', () => {
+  describe('authentication via the optional access token (accessTokenStorage)', () => {
     afterEach(async () => {
       await accessTokenStorage.clearToken();
     });
 
-    it('NÃO envia Authorization quando não há token de sessão', async () => {
+    it('does not send Authorization when there is no token', async () => {
       await accessTokenStorage.clearToken();
 
       let capturedAuth: string | null = null;
@@ -59,7 +59,7 @@ describe('httpClient (integração HTTP via msw)', () => {
       expect(capturedAuth).toBeNull();
     });
 
-    it('envia Bearer <token> quando há token na sessão corrente', async () => {
+    it('sends Bearer <token> when a token is stored', async () => {
       await accessTokenStorage.setToken('gho_session_token_123');
 
       let capturedAuth: string | null = null;
@@ -75,7 +75,7 @@ describe('httpClient (integração HTTP via msw)', () => {
       expect(capturedAuth).toBe('Bearer gho_session_token_123');
     });
 
-    it('lê o token corrente a cada request (atualiza após setToken/clear)', async () => {
+    it('reads the current token on every request, picking up setToken and clear', async () => {
       const captured: (string | null)[] = [];
       server.use(
         http.get(`${GITHUB_BASE_URL}/ping`, ({ request }) => {
@@ -96,7 +96,7 @@ describe('httpClient (integração HTTP via msw)', () => {
   });
 
   describe('timeout', () => {
-    it('quando atinge o timeout configurado, mapHttpError gera NetworkError (não UnexpectedError)', async () => {
+    it('maps a timeout to NetworkError, not UnexpectedError', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/slow`, async () => {
           await delay(500);

@@ -4,7 +4,7 @@ import { InvalidQueryError } from '@/domain/errors/InvalidQueryError';
 import { FakeUserRepository } from '../test-utils/fakes/FakeUserRepository';
 
 describe('GetUserProfileUseCase', () => {
-  it('busca o perfil pelo login', async () => {
+  it('fetches the profile by login', async () => {
     const repo = new FakeUserRepository();
 
     const user = await new GetUserProfileUseCase(repo).execute('octocat');
@@ -13,7 +13,7 @@ describe('GetUserProfileUseCase', () => {
     expect(user.login).toBe('octocat');
   });
 
-  it('remove espaços em volta do login antes de consultar', async () => {
+  it('trims the login before querying', async () => {
     const repo = new FakeUserRepository();
 
     await new GetUserProfileUseCase(repo).execute('  octocat  ');

@@ -1,7 +1,7 @@
 import { mapGitHubUser } from 'src/infra/http/mappers/userMapper';
 
 describe('authMapper', () => {
-  it('mapeia snake_case -> camelCase incluindo os campos de perfil', () => {
+  it('maps snake_case to camelCase, including the profile fields', () => {
     const user = mapGitHubUser({
       id: 1,
       login: 'octocat',
@@ -27,7 +27,7 @@ describe('authMapper', () => {
     });
   });
 
-  it('propaga null em name/email/bio sem coagir', () => {
+  it('propagates null in name, email and bio without coercing', () => {
     const user = mapGitHubUser({
       id: 2,
       login: 'ghost',

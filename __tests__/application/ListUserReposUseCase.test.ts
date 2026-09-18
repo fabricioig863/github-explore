@@ -5,7 +5,7 @@ import { FakeUserRepository } from '../test-utils/fakes/FakeUserRepository';
 import { makeRepository } from '../test-utils/fixtures/repository.fixture';
 
 describe('ListUserReposUseCase', () => {
-  it('trim do login e perPage default 20', async () => {
+  it('trims the login and defaults perPage to 20', async () => {
     const repo = new FakeUserRepository();
     const useCase = new ListUserReposUseCase(repo);
 
@@ -14,7 +14,7 @@ describe('ListUserReposUseCase', () => {
     expect(repo.listUserRepos).toHaveBeenCalledWith({ login: 'octocat', page: 1, perPage: 20 });
   });
 
-  it('encaminha perPage explícito', async () => {
+  it('forwards an explicit perPage', async () => {
     const repo = new FakeUserRepository();
     const useCase = new ListUserReposUseCase(repo);
 
@@ -23,7 +23,7 @@ describe('ListUserReposUseCase', () => {
     expect(repo.listUserRepos).toHaveBeenCalledWith({ login: 'octocat', page: 2, perPage: 30 });
   });
 
-  it('rejeita login vazio com InvalidQueryError e não chama o repo', async () => {
+  it('rejects an empty login with InvalidQueryError without calling the repository', async () => {
     const repo = new FakeUserRepository();
     const useCase = new ListUserReposUseCase(repo);
 
@@ -33,7 +33,7 @@ describe('ListUserReposUseCase', () => {
     expect(repo.listUserRepos).not.toHaveBeenCalled();
   });
 
-  it('devolve o PaginatedResult do repo', async () => {
+  it('returns the repository PaginatedResult', async () => {
     const page = { items: [makeRepository({ id: 1 })], totalCount: 1, hasNextPage: false };
     const repo = new FakeUserRepository({ listUserRepos: page });
     const useCase = new ListUserReposUseCase(repo);

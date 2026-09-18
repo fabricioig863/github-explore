@@ -8,9 +8,9 @@ import { FakeSavedReposRepository } from '../test-utils/fakes/FakeSavedReposRepo
 import { makeRepository } from '../test-utils/fixtures/repository.fixture';
 import { makeSavedRepo } from '../test-utils/fixtures/savedRepo.fixture';
 
-describe('eventos de analytics emitidos pelos use cases', () => {
+describe('analytics events emitted by the use cases', () => {
   describe('SaveRepoUseCase', () => {
-    it('emite repo_saved com a coleção resolvida', async () => {
+    it('emits repo_saved with the resolved collection', async () => {
       const analytics = new FakeAnalytics();
       const repo = new FakeSavedReposRepository({
         save: makeSavedRepo({ fullName: 'facebook/react', name: 'react', topics: ['react'] }),
@@ -25,7 +25,7 @@ describe('eventos de analytics emitidos pelos use cases', () => {
       ]);
     });
 
-    it('reporta collection null quando nada casa', async () => {
+    it('reports a null collection when nothing matches', async () => {
       const analytics = new FakeAnalytics();
       const repo = new FakeSavedReposRepository({
         save: makeSavedRepo({
@@ -41,7 +41,7 @@ describe('eventos de analytics emitidos pelos use cases', () => {
       expect(analytics.eventsNamed('repo_saved')[0]?.collection).toBeNull();
     });
 
-    it('não emite evento quando a validação falha', async () => {
+    it('emits nothing when validation fails', async () => {
       const analytics = new FakeAnalytics();
       const repo = new FakeSavedReposRepository();
 
@@ -54,7 +54,7 @@ describe('eventos de analytics emitidos pelos use cases', () => {
   });
 
   describe('UnsaveRepoUseCase', () => {
-    it('emite repo_unsaved com o fullName normalizado', async () => {
+    it('emits repo_unsaved with the normalized fullName', async () => {
       const analytics = new FakeAnalytics();
 
       await new UnsaveRepoUseCase(new FakeSavedReposRepository(), analytics).execute(
@@ -68,7 +68,7 @@ describe('eventos de analytics emitidos pelos use cases', () => {
   });
 
   describe('SearchReposUseCase', () => {
-    it('emite repo_searched na primeira página, com a contagem', async () => {
+    it('emits repo_searched on the first page, with the result count', async () => {
       const analytics = new FakeAnalytics();
       const repo = new FakeRepoRepository({
         search: { items: [makeRepository()], totalCount: 42, hasNextPage: true },
@@ -81,7 +81,7 @@ describe('eventos de analytics emitidos pelos use cases', () => {
       ]);
     });
 
-    it('não emite nas páginas seguintes, para não contar a mesma busca várias vezes', async () => {
+    it('emits nothing on later pages, so one search is not counted twice', async () => {
       const analytics = new FakeAnalytics();
       const repo = new FakeRepoRepository({
         search: { items: [makeRepository()], totalCount: 42, hasNextPage: true },
@@ -92,7 +92,7 @@ describe('eventos de analytics emitidos pelos use cases', () => {
       expect(analytics.track).not.toHaveBeenCalled();
     });
 
-    it('não emite quando a query é inválida', async () => {
+    it('emits nothing when the query is invalid', async () => {
       const analytics = new FakeAnalytics();
 
       await expect(

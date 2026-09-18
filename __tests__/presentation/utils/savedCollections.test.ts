@@ -19,26 +19,26 @@ function neutralRepo(overrides: Parameters<typeof makeSavedRepo>[0]) {
 
 describe('savedCollections', () => {
   describe('categorize', () => {
-    it('delega ao domínio: usa nome e owner, não só a linguagem', () => {
+    it('delegates to the domain, using name and owner rather than only the language', () => {
       expect(categorize(makeSavedRepo({ language: null }))).toBe('mobile');
       expect(categorize(neutralRepo({ language: null }))).toBeNull();
     });
 
-    it('cai na linguagem quando nome e owner não dizem nada', () => {
+    it('falls back to the language when name and owner say nothing', () => {
       expect(categorize(neutralRepo({ language: 'Swift' }))).toBe('mobile');
       expect(categorize(neutralRepo({ language: 'Go' }))).toBe('backend');
     });
   });
 
   describe('countByCollection', () => {
-    it('zera todas as coleções quando não há repos', () => {
+    it('zeroes every collection when there are no repositories', () => {
       expect(countByCollection([])).toEqual(emptyCounts());
       expect(Object.keys(emptyCounts()).sort()).toEqual(
         ['ai-ml', 'backend', 'mobile', 'tools', 'web'].sort(),
       );
     });
 
-    it('conta cada repo na sua coleção e ignora os sem categoria', () => {
+    it('counts each repository in its collection and ignores uncategorized ones', () => {
       const repos = [
         neutralRepo({ id: 1, language: 'Swift' }),
         neutralRepo({ id: 2, language: 'Kotlin' }),
@@ -59,7 +59,7 @@ describe('savedCollections', () => {
   });
 
   describe('reposInCollection', () => {
-    it('filtra por id de coleção', () => {
+    it('filters by collection id', () => {
       const repos = [
         neutralRepo({ id: 1, language: 'Swift' }),
         neutralRepo({ id: 2, language: 'Go' }),
@@ -73,11 +73,11 @@ describe('savedCollections', () => {
   });
 
   describe('COLLECTIONS metadata', () => {
-    it('expõe as cinco coleções na ordem de exibição', () => {
+    it('exposes the five collections in display order', () => {
       expect(COLLECTIONS.map((c) => c.id)).toEqual(['mobile', 'backend', 'web', 'tools', 'ai-ml']);
     });
 
-    it('toda coleção tem aparência preenchida', () => {
+    it('every collection has its appearance filled in', () => {
       for (const collection of COLLECTIONS) {
         expect(collection.title.length).toBeGreaterThan(0);
         expect(collection.iconColor).toMatch(/^#[0-9A-Fa-f]{6}$/);

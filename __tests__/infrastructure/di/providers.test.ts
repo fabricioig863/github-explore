@@ -21,108 +21,108 @@ describe('di/providers', () => {
       }
     });
 
-    it('USE_MOCK=true quando EXPO_PUBLIC_USE_MOCK está ausente', () => {
+    it('USE_MOCK=true when EXPO_PUBLIC_USE_MOCK is absent', () => {
       delete process.env.EXPO_PUBLIC_USE_MOCK;
       expect(readDiEnv()).toEqual({ USE_MOCK: true, DEBUG_ANALYTICS: false });
     });
 
-    it('USE_MOCK=true quando EXPO_PUBLIC_USE_MOCK="true"', () => {
+    it('USE_MOCK=true when EXPO_PUBLIC_USE_MOCK="true"', () => {
       process.env.EXPO_PUBLIC_USE_MOCK = 'true';
       expect(readDiEnv()).toEqual({ USE_MOCK: true, DEBUG_ANALYTICS: false });
     });
 
-    it('USE_MOCK=true para qualquer valor diferente de "false"', () => {
+    it('USE_MOCK=true for any value other than "false"', () => {
       process.env.EXPO_PUBLIC_USE_MOCK = 'yes';
       expect(readDiEnv()).toEqual({ USE_MOCK: true, DEBUG_ANALYTICS: false });
     });
 
-    it('USE_MOCK=false somente quando EXPO_PUBLIC_USE_MOCK="false"', () => {
+    it('USE_MOCK=false only when EXPO_PUBLIC_USE_MOCK="false"', () => {
       process.env.EXPO_PUBLIC_USE_MOCK = 'false';
       expect(readDiEnv()).toEqual({ USE_MOCK: false, DEBUG_ANALYTICS: false });
     });
   });
 
   describe('provideRepoRepository', () => {
-    it('retorna InMemoryRepoRepository quando USE_MOCK=true', () => {
+    it('returns InMemoryRepoRepository when USE_MOCK=true', () => {
       const repo = provideRepoRepository({ USE_MOCK: true, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('InMemoryRepoRepository');
     });
 
-    it('retorna GitHubRepoRepository quando USE_MOCK=false', () => {
+    it('returns GitHubRepoRepository when USE_MOCK=false', () => {
       const repo = provideRepoRepository({ USE_MOCK: false, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('GitHubRepoRepository');
     });
   });
 
   describe('provideIssueRepository', () => {
-    it('retorna InMemoryIssueRepository quando USE_MOCK=true', () => {
+    it('returns InMemoryIssueRepository when USE_MOCK=true', () => {
       const repo = provideIssueRepository({ USE_MOCK: true, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('InMemoryIssueRepository');
     });
 
-    it('retorna GitHubIssueRepository quando USE_MOCK=false', () => {
+    it('returns GitHubIssueRepository when USE_MOCK=false', () => {
       const repo = provideIssueRepository({ USE_MOCK: false, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('GitHubIssueRepository');
     });
   });
 
   describe('provideSavedReposRepository', () => {
-    it('retorna InMemorySavedReposRepository quando USE_MOCK=true', () => {
+    it('returns InMemorySavedReposRepository when USE_MOCK=true', () => {
       const repo = provideSavedReposRepository({ USE_MOCK: true, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('InMemorySavedReposRepository');
     });
 
-    it('retorna AsyncStorageSavedReposRepository quando USE_MOCK=false', () => {
+    it('returns AsyncStorageSavedReposRepository when USE_MOCK=false', () => {
       const repo = provideSavedReposRepository({ USE_MOCK: false, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('AsyncStorageSavedReposRepository');
     });
   });
 
   describe('provideUserRepository', () => {
-    it('retorna InMemoryUserRepository quando USE_MOCK=true', () => {
+    it('returns InMemoryUserRepository when USE_MOCK=true', () => {
       const repo = provideUserRepository({ USE_MOCK: true, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('InMemoryUserRepository');
     });
 
-    it('retorna GitHubUserRepository quando USE_MOCK=false', () => {
+    it('returns GitHubUserRepository when USE_MOCK=false', () => {
       const repo = provideUserRepository({ USE_MOCK: false, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('GitHubUserRepository');
     });
   });
 
   describe('provideUserPreferencesRepository', () => {
-    it('retorna InMemoryUserPreferencesRepository quando USE_MOCK=true', () => {
+    it('returns InMemoryUserPreferencesRepository when USE_MOCK=true', () => {
       const repo = provideUserPreferencesRepository({ USE_MOCK: true, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('InMemoryUserPreferencesRepository');
     });
 
-    it('retorna AsyncStorageUserPreferencesRepository quando USE_MOCK=false', () => {
+    it('returns AsyncStorageUserPreferencesRepository when USE_MOCK=false', () => {
       const repo = provideUserPreferencesRepository({ USE_MOCK: false, DEBUG_ANALYTICS: false });
       expect(repo.constructor.name).toBe('AsyncStorageUserPreferencesRepository');
     });
   });
 });
 
-describe('provideAnalytics e provideCrashReporter', () => {
-  it('com DEBUG_ANALYTICS usam os adaptadores de console, mesmo fora do modo mock', () => {
+describe('provideAnalytics and provideCrashReporter', () => {
+  it('with DEBUG_ANALYTICS they use the console adapters, even outside mock mode', () => {
     const env = { USE_MOCK: false, DEBUG_ANALYTICS: true };
     expect(provideAnalytics(env).constructor.name).toBe('ConsoleAnalytics');
     expect(provideCrashReporter(env).constructor.name).toBe('ConsoleCrashReporter');
   });
 
-  it('em modo mock usam no-op: os adaptadores reais dependem de módulo nativo', () => {
+  it('in mock mode they use no-op adapters, since the real ones need native modules', () => {
     const env = { USE_MOCK: true, DEBUG_ANALYTICS: false };
     expect(provideAnalytics(env).constructor.name).toBe('NoopAnalytics');
     expect(provideCrashReporter(env).constructor.name).toBe('NoopCrashReporter');
   });
 
-  it('fora do modo mock usam o Firebase', () => {
+  it('outside mock mode they use Firebase', () => {
     const env = { USE_MOCK: false, DEBUG_ANALYTICS: false };
     expect(provideAnalytics(env).constructor.name).toBe('FirebaseAnalytics');
     expect(provideCrashReporter(env).constructor.name).toBe('FirebaseCrashReporter');
   });
 
-  it('DEBUG_ANALYTICS tem precedência sobre USE_MOCK', () => {
+  it('DEBUG_ANALYTICS takes precedence over USE_MOCK', () => {
     expect(provideAnalytics({ USE_MOCK: true, DEBUG_ANALYTICS: true }).constructor.name).toBe(
       'ConsoleAnalytics',
     );

@@ -25,9 +25,9 @@ function makeIssueDto(overrides: Partial<Record<string, unknown>> = {}) {
   };
 }
 
-describe('GitHubIssueRepository (integração HTTP via msw)', () => {
+describe('GitHubIssueRepository (HTTP integration via msw)', () => {
   describe('list', () => {
-    it('usa /search/issues com q="repo:owner/repo type:issue state:open" e ordenação por created desc', async () => {
+    it('queries /search/issues with the repo, type and state qualifiers, sorted by created desc', async () => {
       let capturedUrl: URL | undefined;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, ({ request }) => {
@@ -52,7 +52,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       expect(capturedUrl?.searchParams.get('per_page')).toBe('20');
     });
 
-    it('encaminha state=closed quando solicitado', async () => {
+    it('forwards state=closed when requested', async () => {
       let capturedQ: string | null = null;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, ({ request }) => {
@@ -72,7 +72,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       expect(capturedQ).toBe('repo:foo/bar type:issue state:closed');
     });
 
-    it('retorna PaginatedResult<Issue> com mapeamento DTO→domínio e hasNextPage', async () => {
+    it('returns a PaginatedResult with mapped issues and hasNextPage', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, () =>
           HttpResponse.json({
@@ -124,7 +124,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       expect(result.hasNextPage).toBe(expected);
     });
 
-    it('propaga RateLimitError em 403 com rate-limit headers', async () => {
+    it('raises RateLimitError on 403 with rate-limit headers', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, () =>
           HttpResponse.json({}, { status: 403, headers: { 'x-ratelimit-remaining': '0' } }),
@@ -142,7 +142,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       ).rejects.toBeInstanceOf(RateLimitError);
     });
 
-    it('propaga NotFoundError em 404 com resourceContext "Issues de owner/repo"', async () => {
+    it('raises NotFoundError on 404 with the issues resource context', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, () => HttpResponse.json({}, { status: 404 })),
       );
@@ -160,7 +160,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       });
     });
 
-    it('propaga NetworkError em erro de rede', async () => {
+    it('raises NetworkError on a network failure', async () => {
       server.use(http.get(`${GITHUB_BASE_URL}/search/issues`, () => HttpResponse.error()));
 
       await expect(
@@ -176,7 +176,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
   });
 
   describe('count', () => {
-    it('envia per_page=1 e q com state:open e retorna o total', async () => {
+    it('sends per_page=1 with state:open and returns the total', async () => {
       let capturedUrl: URL | undefined;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, ({ request }) => {
@@ -196,7 +196,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       expect(count).toBe(142);
     });
 
-    it('encaminha state:closed na query', async () => {
+    it('forwards state:closed in the query', async () => {
       let capturedQ: string | null = null;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, ({ request }) => {
@@ -215,7 +215,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       expect(count).toBe(8900);
     });
 
-    it('propaga RateLimitError em 429', async () => {
+    it('raises RateLimitError on 429', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, () => HttpResponse.json({}, { status: 429 })),
       );
@@ -225,7 +225,7 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
       ).rejects.toBeInstanceOf(RateLimitError);
     });
 
-    it('propaga NotFoundError em 404 com resourceContext "Contagem de issues de owner/repo"', async () => {
+    it('raises NotFoundError on 404 with the issue-count resource context', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/issues`, () => HttpResponse.json({}, { status: 404 })),
       );

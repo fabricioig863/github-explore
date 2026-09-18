@@ -20,7 +20,7 @@ function getRetryFn(client: QueryClient): (count: number, err: unknown) => boole
 }
 
 describe('queryClient (infra/query/queryClient)', () => {
-  describe('configuração de defaults', () => {
+  describe('default configuration', () => {
     it('staleTime = 5 minutos', () => {
       expect(queryClient.getDefaultOptions().queries?.staleTime).toBe(5 * 60 * 1000);
     });
@@ -29,35 +29,35 @@ describe('queryClient (infra/query/queryClient)', () => {
       expect(queryClient.getDefaultOptions().queries?.gcTime).toBe(30 * 1000);
     });
 
-    it('refetchOnWindowFocus = false (irrelevante em mobile, evita refetchs em background)', () => {
+    it('refetchOnWindowFocus = false, which is meaningless on mobile and avoids background refetches', () => {
       expect(queryClient.getDefaultOptions().queries?.refetchOnWindowFocus).toBe(false);
     });
   });
 
-  describe('shouldRetry — política de retry por tipo de erro', () => {
-    it('NÃO retry para RateLimitError (rate limit não some com retry)', () => {
+  describe('shouldRetry — retry policy per error type', () => {
+    it('does not retry RateLimitError, since retrying does not clear a rate limit', () => {
       const retry = getRetryFn(queryClient);
       expect(retry(0, new RateLimitError())).toBe(false);
     });
 
-    it('NÃO retry para InvalidQueryError (input ruim, retry só repete o erro)', () => {
+    it('does not retry InvalidQueryError, since bad input only repeats the error', () => {
       const retry = getRetryFn(queryClient);
       expect(retry(0, new InvalidQueryError('curta'))).toBe(false);
     });
 
-    it('NÃO retry para NotFoundError (recurso não existe, retry inútil)', () => {
+    it('does not retry NotFoundError, since the resource does not exist', () => {
       const retry = getRetryFn(queryClient);
       expect(retry(0, new NotFoundError('Repositório'))).toBe(false);
     });
 
-    it('retry uma vez em failureCount = 0 para erros não-tipados (NetworkError, etc.)', () => {
+    it('retries once at failureCount = 0 for untyped errors such as NetworkError', () => {
       const retry = getRetryFn(queryClient);
       expect(retry(0, new NetworkError())).toBe(true);
       expect(retry(0, new UnexpectedError())).toBe(true);
       expect(retry(0, new Error('qualquer'))).toBe(true);
     });
 
-    it('NÃO retry após primeira falha (failureCount >= 1) — máximo 1 retry', () => {
+    it('does not retry after the first failure, capping at one retry', () => {
       const retry = getRetryFn(queryClient);
       expect(retry(1, new NetworkError())).toBe(false);
       expect(retry(2, new UnexpectedError())).toBe(false);

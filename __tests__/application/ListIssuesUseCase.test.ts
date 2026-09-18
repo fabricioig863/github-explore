@@ -8,8 +8,8 @@ import { FakeIssueRepository } from '../test-utils/fakes/FakeIssueRepository';
 import { makeIssue } from '../test-utils/fixtures/issue.fixture';
 
 describe('ListIssuesUseCase', () => {
-  describe('sanitização', () => {
-    it('trim owner e repo antes de delegar', async () => {
+  describe('sanitization', () => {
+    it('trims owner and repo before delegating', async () => {
       const repo = new FakeIssueRepository();
       const useCase = new ListIssuesUseCase(repo);
 
@@ -21,8 +21,8 @@ describe('ListIssuesUseCase', () => {
     });
   });
 
-  describe('validação', () => {
-    it('rejeita owner vazio (whitespace) e não chama o repo', async () => {
+  describe('validation', () => {
+    it('rejects a whitespace-only owner without calling the repository', async () => {
       const repo = new FakeIssueRepository();
       const useCase = new ListIssuesUseCase(repo);
 
@@ -32,7 +32,7 @@ describe('ListIssuesUseCase', () => {
       expect(repo.list).not.toHaveBeenCalled();
     });
 
-    it('rejeita repo vazio e não chama o repo', async () => {
+    it('rejects an empty repo without calling the repository', async () => {
       const repo = new FakeIssueRepository();
       const useCase = new ListIssuesUseCase(repo);
 
@@ -43,7 +43,7 @@ describe('ListIssuesUseCase', () => {
     });
   });
 
-  describe('defaults de regra de negócio', () => {
+  describe('business rule defaults', () => {
     it("state padrão = 'open' quando ausente", async () => {
       const repo = new FakeIssueRepository();
       const useCase = new ListIssuesUseCase(repo);
@@ -62,7 +62,7 @@ describe('ListIssuesUseCase', () => {
       expect(repo.list).toHaveBeenCalledWith(expect.objectContaining({ state: 'closed' }));
     });
 
-    it('perPage padrão = 20 quando ausente', async () => {
+    it('defaults perPage to 20 when absent', async () => {
       const repo = new FakeIssueRepository();
       const useCase = new ListIssuesUseCase(repo);
 
@@ -80,7 +80,7 @@ describe('ListIssuesUseCase', () => {
       expect(repo.list).toHaveBeenCalledWith(expect.objectContaining({ perPage: 50 }));
     });
 
-    it('payload completo: trim + defaults aplicados em uma só chamada', async () => {
+    it('applies trimming and defaults together in a single call', async () => {
       const repo = new FakeIssueRepository();
       const useCase = new ListIssuesUseCase(repo);
 
@@ -96,8 +96,8 @@ describe('ListIssuesUseCase', () => {
     });
   });
 
-  describe('pass-through de retorno', () => {
-    it('devolve PaginatedResult do repo sem mutar', async () => {
+  describe('return pass-through', () => {
+    it('returns the PaginatedResult untouched', async () => {
       const expected = { items: [makeIssue()], totalCount: 1, hasNextPage: false };
       const repo = new FakeIssueRepository({ list: expected });
       const useCase = new ListIssuesUseCase(repo);
@@ -107,7 +107,7 @@ describe('ListIssuesUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
+  describe('typed error propagation', () => {
     it.each([
       ['RateLimitError', new RateLimitError()],
       ['NetworkError', new NetworkError()],
@@ -121,8 +121,8 @@ describe('ListIssuesUseCase', () => {
     });
   });
 
-  describe('não vaza tipos da infra', () => {
-    it('retorna Issue com createdAt como Date (não string ISO crua)', async () => {
+  describe('does not leak infrastructure types', () => {
+    it('returns createdAt as a Date, not a raw ISO string', async () => {
       const expected = {
         items: [makeIssue({ createdAt: new Date('2026-02-10T09:00:00Z') })],
         totalCount: 1,

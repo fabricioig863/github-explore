@@ -23,7 +23,7 @@ describe('vertical slice: savedQueries + useToggleSaveRepo → use cases → InM
   });
 
   describe('save → list', () => {
-    it('salvar um repo aparece na lista de salvos após invalidação', async () => {
+    it('a saved repository shows up in the list after invalidation', async () => {
       const wrapper = makeWrapper();
       const listHook = renderHook(() => useQuery(savedQueries.list()), { wrapper });
       const toggleHook = renderHook(() => useToggleSaveRepo(), { wrapper });
@@ -43,7 +43,7 @@ describe('vertical slice: savedQueries + useToggleSaveRepo → use cases → InM
       expect(persisted[0]?.fullName).toBe('facebook/react-native');
     });
 
-    it('list ordena por savedAt desc (mais recente primeiro)', async () => {
+    it('list sorts by savedAt descending, most recent first', async () => {
       const wrapper = makeWrapper();
       const toggleHook = renderHook(() => useToggleSaveRepo(), { wrapper });
 
@@ -71,7 +71,7 @@ describe('vertical slice: savedQueries + useToggleSaveRepo → use cases → InM
   });
 
   describe('unsave', () => {
-    it('toggle de um repo já salvo (isCurrentlySaved=true) o remove da lista', async () => {
+    it('toggling an already saved repository removes it from the list', async () => {
       const wrapper = makeWrapper();
       const toggleHook = renderHook(() => useToggleSaveRepo(), { wrapper });
 
@@ -94,8 +94,8 @@ describe('vertical slice: savedQueries + useToggleSaveRepo → use cases → InM
     });
   });
 
-  describe('idempotência do save via use case', () => {
-    it('salvar o mesmo fullName duas vezes não duplica (InMemorySavedReposRepository garante via fullName)', async () => {
+  describe('save idempotency through the use case', () => {
+    it('saving the same fullName twice does not duplicate the entry', async () => {
       const repo = makeRepository({ fullName: 'foo/bar', id: 42 });
 
       await container.saveRepoUseCase.execute(repo);
@@ -108,7 +108,7 @@ describe('vertical slice: savedQueries + useToggleSaveRepo → use cases → InM
   });
 
   describe('savedQueries.isSaved ponta-a-ponta', () => {
-    it('reflete o estado real do repositório após save', async () => {
+    it('reflects the real repository state after saving', async () => {
       await container.saveRepoUseCase.execute(makeRepository({ fullName: 'foo/bar' }));
 
       const wrapper = makeWrapper();

@@ -8,8 +8,8 @@ import { FakeRepoRepository } from '../test-utils/fakes/FakeRepoRepository';
 import { makeRepository } from '../test-utils/fixtures/repository.fixture';
 
 describe('GetRepoDetailsUseCase', () => {
-  describe('sanitização', () => {
-    it('trim owner e repo antes de delegar', async () => {
+  describe('sanitization', () => {
+    it('trims owner and repo before delegating', async () => {
       const repo = new FakeRepoRepository({ getDetails: makeRepository() });
       const useCase = new GetRepoDetailsUseCase(repo);
 
@@ -31,8 +31,8 @@ describe('GetRepoDetailsUseCase', () => {
     });
   });
 
-  describe('validação', () => {
-    it('rejeita owner vazio (whitespace) e não chama o repo', async () => {
+  describe('validation', () => {
+    it('rejects a whitespace-only owner without calling the repository', async () => {
       const repo = new FakeRepoRepository();
       const useCase = new GetRepoDetailsUseCase(repo);
 
@@ -42,7 +42,7 @@ describe('GetRepoDetailsUseCase', () => {
       expect(repo.getDetails).not.toHaveBeenCalled();
     });
 
-    it('rejeita repo vazio e não chama o repo', async () => {
+    it('rejects an empty repo without calling the repository', async () => {
       const repo = new FakeRepoRepository();
       const useCase = new GetRepoDetailsUseCase(repo);
 
@@ -53,8 +53,8 @@ describe('GetRepoDetailsUseCase', () => {
     });
   });
 
-  describe('pass-through de retorno', () => {
-    it('devolve o Repository do repo sem mutar (referência preservada)', async () => {
+  describe('return pass-through', () => {
+    it('returns the repository result untouched, preserving the reference', async () => {
       const expected = makeRepository({ fullName: 'foo/bar' });
       const repo = new FakeRepoRepository({ getDetails: expected });
       const useCase = new GetRepoDetailsUseCase(repo);
@@ -64,7 +64,7 @@ describe('GetRepoDetailsUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
+  describe('typed error propagation', () => {
     it.each([
       ['NotFoundError', new NotFoundError('Repositório')],
       ['NetworkError', new NetworkError()],
@@ -78,8 +78,8 @@ describe('GetRepoDetailsUseCase', () => {
     });
   });
 
-  describe('não vaza tipos da infra', () => {
-    it('retorna Repository com pushedAt como Date (não string ISO crua)', async () => {
+  describe('does not leak infrastructure types', () => {
+    it('returns pushedAt as a Date, not a raw ISO string', async () => {
       const expected = makeRepository({ pushedAt: new Date('2026-01-15T10:00:00Z') });
       const repo = new FakeRepoRepository({ getDetails: expected });
       const useCase = new GetRepoDetailsUseCase(repo);

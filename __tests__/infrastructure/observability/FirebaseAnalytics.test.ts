@@ -21,7 +21,7 @@ describe('FirebaseAnalytics', () => {
     logEventMock.mockClear();
   });
 
-  it('usa o nome do evento e manda o resto como parâmetros', () => {
+  it('uses the event name and sends the rest as parameters', () => {
     new FirebaseAnalytics().track({
       name: 'repo_searched',
       query: 'react',
@@ -34,7 +34,7 @@ describe('FirebaseAnalytics', () => {
     });
   });
 
-  it('converte null em "none": o Firebase descarta parâmetro nulo', () => {
+  it('converts null to "none", because Firebase drops null parameters', () => {
     new FirebaseAnalytics().track({
       name: 'repo_saved',
       fullName: 'a/b',
@@ -47,7 +47,7 @@ describe('FirebaseAnalytics', () => {
     });
   });
 
-  it('registra tela como o evento screen_view padrão do GA4', () => {
+  it('logs screens as the standard GA4 screen_view event', () => {
     new FirebaseAnalytics().trackScreen('profile');
 
     expect(logEventMock).toHaveBeenCalledWith(getAnalytics(), 'screen_view', {
@@ -64,7 +64,7 @@ describe('FirebaseCrashReporter', () => {
     crashlyticsLogMock.mockClear();
   });
 
-  it('registra o erro no Crashlytics', () => {
+  it('records the error in Crashlytics', () => {
     const error = new Error('quebrou');
 
     new FirebaseCrashReporter().recordError(error);
@@ -73,7 +73,7 @@ describe('FirebaseCrashReporter', () => {
     expect(setAttributesMock).not.toHaveBeenCalled();
   });
 
-  it('anexa o contexto como atributos, convertendo valores para string', () => {
+  it('attaches the context as attributes, stringifying the values', () => {
     new FirebaseCrashReporter().recordError(new Error('x'), { source: 'query', retries: 2 });
 
     expect(setAttributesMock).toHaveBeenCalledWith(getCrashlytics(), {
@@ -82,7 +82,7 @@ describe('FirebaseCrashReporter', () => {
     });
   });
 
-  it('encaminha mensagens avulsas', () => {
+  it('forwards standalone messages', () => {
     new FirebaseCrashReporter().log('passou aqui');
 
     expect(crashlyticsLogMock).toHaveBeenCalledWith(getCrashlytics(), 'passou aqui');

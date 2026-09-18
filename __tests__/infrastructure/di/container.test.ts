@@ -63,7 +63,7 @@ function readInjectedRepo(useCase: object, key: string): unknown {
 
 describe('createContainer', () => {
   describe('shape', () => {
-    it('expõe os 15 use cases esperados, todos com método execute', () => {
+    it('exposes every expected use case, each with an execute method', () => {
       const c = createContainer(makeDeps());
 
       expect(typeof c.searchReposUseCase.execute).toBe('function');
@@ -81,8 +81,8 @@ describe('createContainer', () => {
     });
   });
 
-  describe('injeção de dependência', () => {
-    it('use cases recebem exatamente os repositórios passados em deps', () => {
+  describe('dependency injection', () => {
+    it('use cases receive exactly the repositories passed in deps', () => {
       const deps = makeDeps();
       const c = createContainer(deps);
 
@@ -115,7 +115,7 @@ describe('createContainer', () => {
       );
     });
 
-    it('use cases que compartilham mesma interface compartilham a mesma instância (não duplica)', () => {
+    it('use cases sharing an interface share the same instance', () => {
       const c = createContainer(makeDeps());
 
       expect(readInjectedRepo(c.searchReposUseCase, 'repoRepository')).toBe(
@@ -129,7 +129,7 @@ describe('createContainer', () => {
       );
     });
 
-    it('chamadas independentes produzem containers independentes (sem estado global)', () => {
+    it('independent calls produce independent containers, with no global state', () => {
       const a = createContainer(makeDeps());
       const b = createContainer(makeDeps());
 

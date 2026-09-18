@@ -17,7 +17,7 @@ describe('QueryProvider', () => {
     seen = [];
   });
 
-  it('expõe um QueryClient para os filhos via contexto', () => {
+  it('exposes a QueryClient to children through context', () => {
     render(
       <QueryProvider>
         <ClientProbe />
@@ -27,7 +27,7 @@ describe('QueryProvider', () => {
     expect(screen.getByTestId('probe-client').props.children).toBe('ok');
   });
 
-  it('mantém o mesmo client entre re-renders', () => {
+  it('keeps the same client across re-renders', () => {
     const { rerender } = render(
       <QueryProvider>
         <ClientProbe />
@@ -44,7 +44,7 @@ describe('QueryProvider', () => {
     expect(new Set(seen).size).toBe(1);
   });
 
-  it('aplica os defaults configurados', () => {
+  it('applies the configured defaults', () => {
     render(
       <QueryProvider>
         <ClientProbe />

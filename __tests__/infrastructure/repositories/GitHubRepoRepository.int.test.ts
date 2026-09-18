@@ -33,9 +33,9 @@ function makeRepoDto(overrides: Partial<Record<string, unknown>> = {}) {
   };
 }
 
-describe('GitHubRepoRepository (integração HTTP via msw)', () => {
+describe('GitHubRepoRepository (HTTP integration via msw)', () => {
   describe('search', () => {
-    it('faz GET /search/repositories com q/sort/order/page/per_page corretos', async () => {
+    it('sends GET /search/repositories with the right q, sort, order, page and per_page', async () => {
       let capturedUrl: URL | undefined;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, ({ request }) => {
@@ -59,7 +59,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       expect(capturedUrl?.searchParams.get('per_page')).toBe('25');
     });
 
-    it('constrói q como "<termo> in:name,description" para termo livre', async () => {
+    it('builds q as "<term> in:name,description" for a free-form term', async () => {
       let capturedQ: string | null = null;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, ({ request }) => {
@@ -73,7 +73,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       expect(capturedQ).toBe('react in:name,description');
     });
 
-    it('constrói q como "repo:owner/name" quando a query é um owner/repo path', async () => {
+    it('builds q as "repo:owner/name" when the query is an owner/repo path', async () => {
       let capturedQ: string | null = null;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, ({ request }) => {
@@ -108,7 +108,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       expect(result.totalCount).toBe(total);
     });
 
-    it('mapeia DTO via repositoryMapper (pushedAt vira Date, snake_case some)', async () => {
+    it('maps the DTO through repositoryMapper, turning pushedAt into a Date', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, () =>
           HttpResponse.json({
@@ -132,7 +132,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       expect(items[0]?.stars).toBe(230000);
     });
 
-    it('em 403 + x-ratelimit-remaining=0 levanta RateLimitError com resetAt do header', async () => {
+    it('raises RateLimitError with resetAt on 403 with x-ratelimit-remaining=0', async () => {
       const resetUnix = 1_780_000_000;
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, () =>
@@ -158,7 +158,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       });
     });
 
-    it('em 403 sem rate-limit header levanta UnexpectedError (não RateLimitError)', async () => {
+    it('raises UnexpectedError on 403 without rate-limit headers', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, () =>
           HttpResponse.json({ message: 'forbidden' }, { status: 403 }),
@@ -170,7 +170,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       ).rejects.toBeInstanceOf(UnexpectedError);
     });
 
-    it('em 429 levanta RateLimitError', async () => {
+    it('raises RateLimitError on 429', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, () =>
           HttpResponse.json({ message: 'too many' }, { status: 429 }),
@@ -182,7 +182,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       ).rejects.toBeInstanceOf(RateLimitError);
     });
 
-    it('em 404 levanta NotFoundError', async () => {
+    it('raises NotFoundError on 404', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/search/repositories`, () =>
           HttpResponse.json({ message: 'not found' }, { status: 404 }),
@@ -194,7 +194,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       ).rejects.toBeInstanceOf(NotFoundError);
     });
 
-    it('em erro de rede levanta NetworkError', async () => {
+    it('raises NetworkError on a network failure', async () => {
       server.use(http.get(`${GITHUB_BASE_URL}/search/repositories`, () => HttpResponse.error()));
 
       await expect(
@@ -204,7 +204,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
   });
 
   describe('getDetails', () => {
-    it('chama /repos/${owner}/${repo} e mapeia DTO para Repository', async () => {
+    it('calls /repos/:owner/:repo and maps the DTO to a Repository', async () => {
       let capturedPath: string | undefined;
       server.use(
         http.get(`${GITHUB_BASE_URL}/repos/:owner/:repo`, ({ request, params }) => {
@@ -220,7 +220,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       expect(result.pushedAt).toBeInstanceOf(Date);
     });
 
-    it('em 404 levanta NotFoundError com resourceContext "Repositório owner/repo"', async () => {
+    it('raises NotFoundError on 404 with the repository resource context', async () => {
       server.use(
         http.get(`${GITHUB_BASE_URL}/repos/:owner/:repo`, () =>
           HttpResponse.json({ message: 'not found' }, { status: 404 }),
@@ -234,7 +234,7 @@ describe('GitHubRepoRepository (integração HTTP via msw)', () => {
       });
     });
 
-    it('em erro de rede levanta NetworkError', async () => {
+    it('raises NetworkError on a network failure', async () => {
       server.use(http.get(`${GITHUB_BASE_URL}/repos/:owner/:repo`, () => HttpResponse.error()));
 
       await expect(new GitHubRepoRepository().getDetails('foo', 'bar')).rejects.toBeInstanceOf(

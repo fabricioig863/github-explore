@@ -5,8 +5,8 @@ import { UnexpectedError } from '@/domain/errors/UnexpectedError';
 import { FakeSavedReposRepository } from '../test-utils/fakes/FakeSavedReposRepository';
 
 describe('IsRepoSavedUseCase', () => {
-  describe('sanitização', () => {
-    it('trim fullName antes de delegar', async () => {
+  describe('sanitization', () => {
+    it('trims fullName before delegating', async () => {
       const repo = new FakeSavedReposRepository({ isSaved: true });
       const useCase = new IsRepoSavedUseCase(repo);
 
@@ -16,8 +16,8 @@ describe('IsRepoSavedUseCase', () => {
     });
   });
 
-  describe('validação', () => {
-    it('rejeita fullName vazio e não chama o repo', async () => {
+  describe('validation', () => {
+    it('rejects an empty fullName without calling the repository', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new IsRepoSavedUseCase(repo);
 
@@ -25,7 +25,7 @@ describe('IsRepoSavedUseCase', () => {
       expect(repo.isSaved).not.toHaveBeenCalled();
     });
 
-    it('rejeita fullName só whitespace e não chama o repo', async () => {
+    it('rejects a whitespace-only fullName without calling the repository', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new IsRepoSavedUseCase(repo);
 
@@ -34,7 +34,7 @@ describe('IsRepoSavedUseCase', () => {
     });
   });
 
-  describe('pass-through de retorno', () => {
+  describe('return pass-through', () => {
     it.each([
       ['true', true],
       ['false', false],
@@ -48,8 +48,8 @@ describe('IsRepoSavedUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
-    it('propaga UnexpectedError do repo sem reembrulhar', async () => {
+  describe('typed error propagation', () => {
+    it('propagates UnexpectedError without re-wrapping it', async () => {
       const repo = new FakeSavedReposRepository();
       const err = new UnexpectedError();
       repo.isSaved.mockRejectedValueOnce(err);
@@ -59,8 +59,8 @@ describe('IsRepoSavedUseCase', () => {
     });
   });
 
-  describe('não vaza tipos da infra', () => {
-    it('retorna boolean puro (não objeto)', async () => {
+  describe('does not leak infrastructure types', () => {
+    it('returns a plain boolean, not an object', async () => {
       const repo = new FakeSavedReposRepository({ isSaved: true });
       const useCase = new IsRepoSavedUseCase(repo);
 

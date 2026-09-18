@@ -16,7 +16,7 @@ const USER: GitHubUser = {
 };
 
 describe('ProfileHero', () => {
-  it('renderiza nome, handle, bio e os três stats', () => {
+  it('renders name, handle, bio and the three stats', () => {
     const { getByText } = renderWithProviders(<ProfileHero user={USER} />);
 
     expect(getByText('The Octocat')).toBeTruthy();
@@ -28,7 +28,7 @@ describe('ProfileHero', () => {
     expect(getByText('seguindo')).toBeTruthy();
   });
 
-  it('usa o login como título quando name é null', () => {
+  it('falls back to the login as the title when name is null', () => {
     const { getByText } = renderWithProviders(<ProfileHero user={{ ...USER, name: null }} />);
 
     expect(getByText('octocat')).toBeTruthy();

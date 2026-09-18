@@ -4,7 +4,7 @@ import {
 } from '@/presentation/utils/contributions';
 
 describe('contributions placeholder', () => {
-  it('gera 140 células com níveis 0..4 e datas', () => {
+  it('generates 140 cells with levels 0 to 4 and dates', () => {
     const days = generatePlaceholderContributions('octocat');
 
     expect(days).toHaveLength(140);
@@ -16,21 +16,21 @@ describe('contributions placeholder', () => {
     }
   });
 
-  it('é determinístico para a mesma seed', () => {
+  it('is deterministic for the same seed', () => {
     const a = generatePlaceholderContributions('octocat');
     const b = generatePlaceholderContributions('octocat');
 
     expect(a.map((d) => d.level)).toEqual(b.map((d) => d.level));
   });
 
-  it('seeds diferentes produzem séries diferentes', () => {
+  it('different seeds produce different series', () => {
     const a = generatePlaceholderContributions('octocat').map((d) => d.level);
     const b = generatePlaceholderContributions('torvalds').map((d) => d.level);
 
     expect(a).not.toEqual(b);
   });
 
-  it('totalContributions soma as contagens', () => {
+  it('totalContributions sums the counts', () => {
     const days = generatePlaceholderContributions('x');
     const manual = days.reduce((s, d) => s + d.count, 0);
 

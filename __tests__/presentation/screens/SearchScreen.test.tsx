@@ -23,14 +23,14 @@ describe('SearchScreen', () => {
     executeMock.mockResolvedValue({ items: [], totalCount: 0, hasNextPage: false });
   });
 
-  it('busca a pill Trending no mount (sem digitar nada)', async () => {
+  it('queries the Trending pill on mount, with no typing', async () => {
     renderScreen();
 
     await waitFor(() => expect(executeMock).toHaveBeenCalled(), { timeout: 2000 });
     expect(executeMock).toHaveBeenCalledWith({ query: 'stars:>10000', page: 1, perPage: 20 });
   });
 
-  it('texto digitado (>= 2 chars) sobrepõe a pill selecionada', async () => {
+  it('typed text of two or more characters overrides the selected pill', async () => {
     executeMock.mockResolvedValue({
       items: [makeRepository({ id: 1, name: 'react-native', fullName: 'fb/react-native' })],
       totalCount: 1,
@@ -49,7 +49,7 @@ describe('SearchScreen', () => {
     expect(screen.getByText('Top resultados · 1')).toBeTruthy();
   });
 
-  it('renderiza copy de vazio ciente de path quando owner/repo não retorna nada', async () => {
+  it('renders path-aware empty copy when an owner/repo query returns nothing', async () => {
     executeMock.mockResolvedValue({ items: [], totalCount: 0, hasNextPage: false });
 
     renderScreen();
@@ -62,7 +62,7 @@ describe('SearchScreen', () => {
     await screen.findByText(/owner\/repositório/, {}, { timeout: 2000 });
   });
 
-  it('renderiza EmptyState de erro com mensagem pt-BR quando o use case rejeita', async () => {
+  it('renders the error empty state when the use case rejects', async () => {
     executeMock.mockRejectedValue(new NetworkError());
 
     renderScreen();

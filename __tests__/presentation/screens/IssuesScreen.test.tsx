@@ -25,7 +25,7 @@ describe('IssuesScreen', () => {
     countMock.mockReset();
   });
 
-  it('renderiza a lista, o cabeçalho de abertas e as duas pills com contagem', async () => {
+  it('renders the list, the open header and both pills with counts', async () => {
     listMock.mockResolvedValue({
       items: [makeIssue({ id: 1, title: 'First issue' })],
       totalCount: 50,
@@ -42,7 +42,7 @@ describe('IssuesScreen', () => {
     expect(screen.getByText('Fechadas · 8.9k')).toBeTruthy();
   });
 
-  it('tocar na pill "Fechadas" alterna a lista para state=closed', async () => {
+  it('tapping the "Fechadas" pill switches the list to state=closed', async () => {
     listMock.mockImplementation(({ state }: { state: 'open' | 'closed' }) =>
       Promise.resolve({
         items: [makeIssue({ id: state === 'open' ? 1 : 2, title: `${state} issue` })],
@@ -64,7 +64,7 @@ describe('IssuesScreen', () => {
     expect(listMock).toHaveBeenCalledWith(expect.objectContaining({ state: 'closed' }));
   });
 
-  it('renderiza o empty state quando não há issues abertas', async () => {
+  it('renders the empty state when there are no open issues', async () => {
     listMock.mockResolvedValue({ items: [], totalCount: 0, hasNextPage: false });
     countMock.mockResolvedValue(0);
 

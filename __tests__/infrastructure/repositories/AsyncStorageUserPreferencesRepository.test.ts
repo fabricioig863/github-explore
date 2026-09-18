@@ -9,12 +9,12 @@ describe('AsyncStorageUserPreferencesRepository', () => {
     await AsyncStorage.clear();
   });
 
-  it('get devolve o default quando não há nada persistido', async () => {
+  it('get returns the default when nothing is persisted', async () => {
     const repo = new AsyncStorageUserPreferencesRepository();
     expect(await repo.get()).toEqual({ localAvatarUri: null });
   });
 
-  it('update persiste e get devolve o valor (merge com default)', async () => {
+  it('update persists and get returns the merged value', async () => {
     const repo = new AsyncStorageUserPreferencesRepository();
 
     const updated = await repo.update({ localAvatarUri: 'file://a.jpg' });
@@ -22,7 +22,7 @@ describe('AsyncStorageUserPreferencesRepository', () => {
     expect(await repo.get()).toEqual({ localAvatarUri: 'file://a.jpg' });
   });
 
-  it('update com null limpa o avatar local', async () => {
+  it('update with null clears the local avatar', async () => {
     const repo = new AsyncStorageUserPreferencesRepository();
     await repo.update({ localAvatarUri: 'file://a.jpg' });
 

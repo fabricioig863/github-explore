@@ -8,8 +8,8 @@ import { makeSavedRepo } from '../test-utils/fixtures/savedRepo.fixture';
 import { FakeAnalytics } from '../test-utils/fakes/FakeAnalytics';
 
 describe('SaveRepoUseCase', () => {
-  describe('validação', () => {
-    it('rejeita Repository com fullName só whitespace e não chama o repo', async () => {
+  describe('validation', () => {
+    it('rejects a whitespace-only fullName without calling the repository', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
 
@@ -19,7 +19,7 @@ describe('SaveRepoUseCase', () => {
       expect(repo.save).not.toHaveBeenCalled();
     });
 
-    it('rejeita Repository com fullName vazio e não chama o repo', async () => {
+    it('rejects an empty fullName without calling the repository', async () => {
       const repo = new FakeSavedReposRepository();
       const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
 
@@ -30,8 +30,8 @@ describe('SaveRepoUseCase', () => {
     });
   });
 
-  describe('pass-through de retorno', () => {
-    it('encaminha o Repository ao repo e devolve o SavedRepo do repo (referência preservada)', async () => {
+  describe('return pass-through', () => {
+    it('forwards the repository and returns the saved entry, preserving the reference', async () => {
       const expected = makeSavedRepo();
       const repo = new FakeSavedReposRepository({ save: expected });
       const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
@@ -45,8 +45,8 @@ describe('SaveRepoUseCase', () => {
     });
   });
 
-  describe('propagação de erros tipados', () => {
-    it('propaga UnexpectedError do repo sem reembrulhar', async () => {
+  describe('typed error propagation', () => {
+    it('propagates UnexpectedError without re-wrapping it', async () => {
       const repo = new FakeSavedReposRepository();
       const err = new UnexpectedError();
       repo.save.mockRejectedValueOnce(err);
@@ -56,8 +56,8 @@ describe('SaveRepoUseCase', () => {
     });
   });
 
-  describe('não vaza tipos da infra', () => {
-    it('retorna SavedRepo com savedAt como Date (não string)', async () => {
+  describe('does not leak infrastructure types', () => {
+    it('returns savedAt as a Date, not a string', async () => {
       const expected = makeSavedRepo({ savedAt: new Date('2026-05-17T10:00:00Z') });
       const repo = new FakeSavedReposRepository({ save: expected });
       const useCase = new SaveRepoUseCase(repo, new FakeAnalytics());
