@@ -40,3 +40,50 @@ jobs:
 
       - name: Testes e cobertura
         run: pnpm test:ci
+
+  android:
+    name: APK de Android
+    needs: quality
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instala o pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Instala o Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instala o JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Prepara o Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Instala as dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Gera o projeto nativo
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Compila o APK
+        run: ./gradlew assembleRelease --no-daemon
+        working-directory: android
+
+      - name: Publica o APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-explorer-apk
+          path: android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+          if-no-files-found: error
