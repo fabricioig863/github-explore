@@ -24,6 +24,7 @@ instale e rode.
   - [Categorização em coleções](#categorização-em-coleções)
 - [Testes](#testes)
 - [Scripts](#scripts)
+- [Observabilidade (Firebase)](#observabilidade-firebase)
 - [CI](#ci)
 - [Bibliotecas e por que cada uma](#bibliotecas-e-por-que-cada-uma)
 - [Possíveis melhorias futuras](#possíveis-melhorias-futuras)
@@ -294,6 +295,80 @@ garantia — a UI é verificada por comportamento.
 | `pnpm typecheck`            | `tsc --noEmit`                                 |
 | `pnpm lint`                 | ESLint, incluindo as fronteiras da arquitetura |
 | `pnpm format`               | Prettier                                       |
+
+---
+
+## Observabilidade (Firebase)
+
+O app usa **Firebase Analytics** e **Crashlytics**, e a integração foi feita como porta e
+adaptador — o SDK não aparece em nenhuma tela nem use case.
+
+```
+domain/observability/     IAnalytics · ICrashReporter · AnalyticsEvent
+infra/observability/      FirebaseAnalytics · ConsoleAnalytics · NoopAnalytics
+infra/di/providers.ts     escolhe qual usar
+```
+
+Trocar o Firebase por outro provedor mexe em um arquivo.
+
+### O que é coletado
+
+Os eventos são um union discriminado em
+[`AnalyticsEvent.ts`](src/domain/observability/AnalyticsEvent.ts), e não strings soltas:
+errar o nome de um evento vira erro de compilação, não um dado que some do painel.
+
+| Evento              | Quando                                     | Onde é emitido       |
+| ------------------- | ------------------------------------------ | -------------------- |
+| `repo_searched`     | busca concluída (só página 1)              | `SearchReposUseCase` |
+| `repo_saved`        | repositório salvo, com a coleção resolvida | `SaveRepoUseCase`    |
+| `repo_unsaved`      | repositório removido                       | `UnsaveRepoUseCase`  |
+| `repo_viewed`       | tela de detalhes aberta                    | `RepoDetailScreen`   |
+| `issues_viewed`     | lista de issues aberta, com o filtro       | `IssuesScreen`       |
+| `profile_viewed`    | perfil consultado                          | `ProfileScreen`      |
+| `collection_opened` | coleção selecionada                        | `SavedScreen`        |
+
+Mais `screen_view` em cada uma das sete telas.
+
+Nada identifica pessoas: não há login no app, nenhum identificador de usuário é enviado, e
+o token opcional nunca sai do aparelho.
+
+Os eventos de domínio saem dos use cases; os de visualização, das telas. Abrir uma tela não
+é uma operação de domínio.
+
+### Erros
+
+O `Crashlytics` recebe as falhas pelo `QueryCache` e pelo `MutationCache` do React Query, em
+[`queryClient.ts`](src/infra/query/queryClient.ts). Rate limit, not found e query inválida
+são **ignorados de propósito**: são respostas esperadas da API, já tratadas na UI.
+Reportá-las afogaria o painel no que não é defeito.
+
+### Rodando sem Firebase
+
+Três adaptadores, escolhidos em `providers.ts`:
+
+| Situação                           | Adaptador                                  |
+| ---------------------------------- | ------------------------------------------ |
+| `EXPO_PUBLIC_DEBUG_ANALYTICS=true` | `Console` — imprime os eventos no terminal |
+| `EXPO_PUBLIC_USE_MOCK=true`        | `Noop` — não faz nada                      |
+| padrão                             | `Firebase`                                 |
+
+O adaptador de console é o caminho mais rápido para ver os eventos durante o
+desenvolvimento, sem abrir o painel.
+
+### Configuração
+
+`google-services.json` (Android) e `GoogleService-Info.plist` (iOS) **são versionados**. Sem
+eles o `expo prebuild` falha e o projeto não compila. Não são segredo: vão embutidos em
+qualquer binário distribuído, e a API key do Firebase é restringível pelo console, não por
+sigilo.
+
+Duas decisões de build ficam registradas no `app.json`:
+
+- **`ios.disableSPM: true`** — o react-native-firebase resolve o SDK por Swift Package
+  Manager por padrão, e nesse modo o script de upload de símbolos do Crashlytics procura o
+  plist em `ios/`, enquanto o plugin o instala em `ios/<target>/`. Com o SPM desligado, o
+  build usa o script do CocoaPods, que localiza o arquivo sozinho.
+- **`ios.useFrameworks: "static"`** — exigido pelos pods em Swift do Firebase.
 
 ---
 

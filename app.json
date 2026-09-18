@@ -50,11 +50,18 @@
         {
           "ios": {
             "enableSceneSupport": true,
-            "useFrameworks": "dynamic"
+            "useFrameworks": "static"
           }
         }
       ],
-      "@react-native-firebase/app",
+      [
+        "@react-native-firebase/app",
+        {
+          "ios": {
+            "disableSPM": true
+          }
+        }
+      ],
       "@react-native-firebase/analytics",
       "@react-native-firebase/crashlytics"
     ],
