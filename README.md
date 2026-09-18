@@ -12,6 +12,7 @@ instale e rode.
 
 ## Índice
 
+- [Instalando o app pronto](#instalando-o-app-pronto)
 - [Rodando o projeto](#rodando-o-projeto)
 - [Rate limit da API](#rate-limit-da-api)
 - [O que o app faz](#o-que-o-app-faz)
@@ -28,6 +29,26 @@ instale e rode.
 - [CI](#ci)
 - [Bibliotecas e por que cada uma](#bibliotecas-e-por-que-cada-uma)
 - [Possíveis melhorias futuras](#possíveis-melhorias-futuras)
+
+---
+
+## Instalando o app pronto
+
+Se você só quer **usar** o app, não precisa clonar nem compilar nada.
+
+| Plataforma          | Como                                               |
+| ------------------- | -------------------------------------------------- |
+| **Android**         | abra o link no celular e toque em _Install_        |
+| **iOS (Simulador)** | baixe o `.app` e arraste para o simulador no macOS |
+
+**[⬇️ Baixar o APK de Android](https://expo.dev/accounts/c4r3d4c4lur4/projects/github-explore/builds/f2714d17-51be-4c73-97a5-33f6b99cbf47)**
+
+No Android o sistema pede autorização para instalar de fonte desconhecida — é só aceitar
+uma vez. No iOS, com o simulador aberto:
+
+```bash
+xcrun simctl install booted githubexplore.app
+```
 
 ---
 
