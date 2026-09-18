@@ -1,5 +1,7 @@
 # GitHub Explorer
 
+[![CI](https://github.com/fabricioig863/github-explore/actions/workflows/ci.yml/badge.svg)](https://github.com/fabricioig863/github-explore/actions/workflows/ci.yml)
+
 App mobile em Expo / React Native para explorar repositórios e issues do GitHub, com uma
 lista de repositórios salvos localmente e organizados em coleções automáticas.
 
@@ -22,6 +24,7 @@ instale e rode.
   - [Categorização em coleções](#categorização-em-coleções)
 - [Testes](#testes)
 - [Scripts](#scripts)
+- [CI](#ci)
 - [Bibliotecas e por que cada uma](#bibliotecas-e-por-que-cada-uma)
 - [Possíveis melhorias futuras](#possíveis-melhorias-futuras)
 
@@ -291,6 +294,27 @@ garantia — a UI é verificada por comportamento.
 | `pnpm typecheck`            | `tsc --noEmit`                                 |
 | `pnpm lint`                 | ESLint, incluindo as fronteiras da arquitetura |
 | `pnpm format`               | Prettier                                       |
+
+---
+
+## CI
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda a cada push na `Master` e a
+cada pull request que a tenha como alvo. São três verificações, em ordem crescente de
+custo: `typecheck`, `lint` e `test:coverage`.
+
+Duas decisões que valem o registro:
+
+**Um job só, com passos sequenciais**, em vez de três jobs paralelos. Paralelizar
+significaria três `pnpm install` — e como o repositório é privado, cada minuto sai da cota
+de 2.000/mês do plano free. Sequencial roda em ~3 minutos contra ~9.
+
+**`test:coverage` em vez de `test`.** Executa os mesmos testes, mas também aplica os
+thresholds. Se a cobertura do domínio cair de 100%, o CI falha — o número no README para de
+ser uma promessa e passa a ser uma trava.
+
+O install usa `--frozen-lockfile`: se o `pnpm-lock.yaml` divergir do `package.json`, a
+build quebra em vez de resolver silenciosamente uma árvore diferente da local.
 
 ---
 
