@@ -26,6 +26,8 @@ export class InMemorySavedReposRepository implements ISavedReposRepository {
       language: repo.language,
       htmlUrl: repo.htmlUrl,
       savedAt: new Date(),
+      topics: repo.topics,
+      description: repo.description,
     };
     this.entries = [entry, ...this.entries];
     return entry;

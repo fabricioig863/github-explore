@@ -1,6 +1,8 @@
 import type { SavedRepo } from '@/domain/entities/SavedRepo';
+import { COLLECTION_RULES, categorizeSavedRepo } from '@/domain/services/repoCategorization';
+import type { CollectionId } from '@/domain/services/repoCategorization';
 
-export type CollectionId = 'mobile' | 'backend' | 'tools' | 'ai-ml';
+export type { CollectionId };
 
 export interface CollectionMeta {
   id: CollectionId;
@@ -9,40 +11,37 @@ export interface CollectionMeta {
   glyph: string;
 }
 
-export const COLLECTIONS: readonly CollectionMeta[] = [
-  { id: 'mobile', title: 'Mobile', iconColor: '#5B6CFF', glyph: '☰' },
-  { id: 'backend', title: 'Backend', iconColor: '#C53030', glyph: '▨' },
-  { id: 'tools', title: 'Ferramentas', iconColor: '#2F855A', glyph: '⛭' },
-  { id: 'ai-ml', title: 'AI & ML', iconColor: '#B7791F', glyph: '✪' },
-] as const;
-
-const LANG_TO_COLLECTION: Record<string, CollectionId> = {
-  swift: 'mobile',
-  kotlin: 'mobile',
-  dart: 'mobile',
-  'objective-c': 'mobile',
-  java: 'mobile',
-  'c++': 'mobile',
-  go: 'backend',
-  rust: 'backend',
-  ruby: 'backend',
-  php: 'backend',
-  'c#': 'backend',
-  elixir: 'backend',
-  python: 'backend',
-  shell: 'tools',
-  makefile: 'tools',
-  dockerfile: 'tools',
-  'jupyter notebook': 'ai-ml',
+// Só aparência. Quem decide o que entra em cada coleção — e em que ordem de
+// prioridade — é COLLECTION_RULES, no domínio.
+const COLLECTION_APPEARANCE: Record<CollectionId, Omit<CollectionMeta, 'id'>> = {
+  mobile: { title: 'Mobile', iconColor: '#5B6CFF', glyph: '☰' },
+  backend: { title: 'Backend', iconColor: '#C53030', glyph: '▨' },
+  web: { title: 'Web', iconColor: '#2B6CB0', glyph: '◈' },
+  tools: { title: 'Ferramentas', iconColor: '#2F855A', glyph: '⛭' },
+  'ai-ml': { title: 'AI & ML', iconColor: '#B7791F', glyph: '✪' },
 };
 
+// Ordem de exibição fixa, independente da ordem de prioridade das regras: a
+// prioridade muda conforme o mapeamento evolui, mas a grade não deve dançar.
+const DISPLAY_ORDER: readonly CollectionId[] = ['mobile', 'backend', 'web', 'tools', 'ai-ml'];
+
+export const COLLECTIONS: readonly CollectionMeta[] = DISPLAY_ORDER.map((id) => ({
+  id,
+  ...COLLECTION_APPEARANCE[id],
+}));
+
 export function categorize(repo: SavedRepo): CollectionId | null {
-  if (repo.language === null) return null;
-  return LANG_TO_COLLECTION[repo.language.toLowerCase()] ?? null;
+  return categorizeSavedRepo(repo);
+}
+
+export function emptyCounts(): Record<CollectionId, number> {
+  const acc = {} as Record<CollectionId, number>;
+  for (const rule of COLLECTION_RULES) acc[rule.collection] = 0;
+  return acc;
 }
 
 export function countByCollection(repos: readonly SavedRepo[]): Record<CollectionId, number> {
-  const acc: Record<CollectionId, number> = { mobile: 0, backend: 0, tools: 0, 'ai-ml': 0 };
+  const acc = emptyCounts();
   for (const repo of repos) {
     const id = categorize(repo);
     if (id !== null) acc[id] += 1;

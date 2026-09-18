@@ -10,6 +10,8 @@ export function makeSavedRepo(overrides?: Partial<SavedRepo>): SavedRepo {
     language: 'TypeScript',
     htmlUrl: 'https://github.com/facebook/react-native',
     savedAt: new Date('2026-05-17T10:00:00Z'),
+    topics: [],
+    description: null,
     ...overrides,
   };
 }
