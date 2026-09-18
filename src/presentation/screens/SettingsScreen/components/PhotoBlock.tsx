@@ -44,7 +44,13 @@ function Action({
   );
 }
 
-export function PhotoBlock({ avatarUri, login, onChange, onRemove, busy = false }: PhotoBlockProps) {
+export function PhotoBlock({
+  avatarUri,
+  login,
+  onChange,
+  onRemove,
+  busy = false,
+}: PhotoBlockProps) {
   const theme = useTheme<Theme>();
 
   return (

@@ -10,7 +10,7 @@ interface BadgeProps {
   children: ReactNode;
   tone?: BadgeTone;
   dotColor?: string;
-  /** Cor do label (#rrggbb) — quando definida, pinta fundo + texto no estilo GitHub. */
+
   color?: string;
 }
 
@@ -23,7 +23,6 @@ const TONE_COLOR: Record<BadgeTone, keyof Theme['colors']> = {
 };
 
 export function Badge({ children, tone = 'neutral', dotColor, color }: BadgeProps) {
-  // Estilo "label colorido": fundo translúcido + borda + texto na cor do label.
   if (color !== undefined) {
     return (
       <Box

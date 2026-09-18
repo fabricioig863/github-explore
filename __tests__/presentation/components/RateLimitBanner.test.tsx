@@ -31,9 +31,7 @@ describe('RateLimitBanner', () => {
 
   it('renders a precise retry hint formatted with resetAt', () => {
     const reset = new Date('2026-05-17T12:10:00Z');
-    renderWithProviders(
-      <RateLimitBanner error={new RateLimitError(undefined, reset)} />,
-    );
+    renderWithProviders(<RateLimitBanner error={new RateLimitError(undefined, reset)} />);
     expect(screen.getByText('Tente novamente em 10 minutos.')).toBeTruthy();
   });
 });

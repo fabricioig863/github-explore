@@ -19,6 +19,5 @@ export async function loadThemeMode(): Promise<ThemeMode> {
 export async function saveThemeMode(mode: ThemeMode): Promise<void> {
   try {
     await AsyncStorage.setItem(STORAGE_KEY, mode);
-  } catch {
-  }
+  } catch {}
 }

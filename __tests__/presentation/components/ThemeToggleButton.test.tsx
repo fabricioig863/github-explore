@@ -7,9 +7,7 @@ import { renderWithProviders } from '../../test-utils/renderWithProviders';
 describe('ThemeToggleButton', () => {
   it('calls onToggle when pressed', () => {
     const onToggle = jest.fn();
-    const { root } = renderWithProviders(
-      <ThemeToggleButton isDark={false} onToggle={onToggle} />,
-    );
+    const { root } = renderWithProviders(<ThemeToggleButton isDark={false} onToggle={onToggle} />);
 
     fireEvent.press(root);
     expect(onToggle).toHaveBeenCalledTimes(1);

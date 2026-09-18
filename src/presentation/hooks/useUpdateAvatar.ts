@@ -4,8 +4,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { queryKeys } from '@/presentation/query/queryKeys';
 import { container } from 'src/infra/di/bootstrap';
 
-// Abre a galeria, persiste o URI escolhido como avatar local (sobrepõe o do GitHub).
-// TODO: PATCH /user quando tivermos o escopo `user` no OAuth.
 export function useUpdateAvatar() {
   const queryClient = useQueryClient();
   return useMutation({

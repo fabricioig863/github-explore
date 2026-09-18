@@ -15,8 +15,7 @@ interface SavedRepoPersisted {
   language: string | null;
   htmlUrl: string;
   savedAt: string;
-  // Opcionais na leitura: entradas gravadas antes da categorização por topics
-  // não os têm. Ver `fromPersisted`.
+
   topics?: string[];
   description?: string | null;
 }
@@ -40,9 +39,6 @@ function toPersisted(entry: SavedRepo): SavedRepoPersisted {
   return { ...entry, savedAt: entry.savedAt.toISOString() };
 }
 
-// Os repos salvos antes destes campos existirem continuam legíveis: caem para
-// topics vazios e sem descrição, e passam a ser categorizados por owner, nome e
-// linguagem. Nenhum some da lista, então não vale o custo de migrar a chave.
 function fromPersisted(entry: SavedRepoPersisted): SavedRepo {
   return {
     ...entry,

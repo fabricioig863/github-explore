@@ -39,7 +39,6 @@ export function IssuesScreen() {
     error,
   } = useInfiniteQuery(issueQueries.list(owner, repo, state));
 
-  // Contagens carregam em paralelo e independentes — alternar a pill não invalida a outra.
   const { data: openCount } = useQuery(issueQueries.count(owner, repo, 'open'));
   const { data: closedCount } = useQuery(issueQueries.count(owner, repo, 'closed'));
 
@@ -123,7 +122,6 @@ export function IssuesScreen() {
         paddingHorizontal="xxxl"
         paddingTop="md"
       >
-        {/* Número grande é sempre o de abertas — não troca com a pill. */}
         <Text variant="display">
           {openCount !== undefined ? openCount.toLocaleString('pt-BR') : '—'}
         </Text>

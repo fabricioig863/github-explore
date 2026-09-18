@@ -19,9 +19,6 @@ interface ProvidersProps {
   queryClient?: QueryClient;
 }
 
-// Sem NavigationContainer: com expo-router o contexto de navegação vem do
-// roteador baseado em arquivos, e telas que leem parâmetros de rota são
-// testadas com mock de expo-router, não com uma árvore de navegação real.
 export function AllProviders({ children, queryClient }: ProvidersProps) {
   const client = queryClient ?? createTestQueryClient();
   return (

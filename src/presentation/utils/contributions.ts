@@ -4,7 +4,7 @@ const WEEKS = 20;
 const DAYS_PER_WEEK = 7;
 const TOTAL_CELLS = WEEKS * DAYS_PER_WEEK; // 140
 const DAY_MS = 86_400_000;
-// Base fixa (não usa Date.now) — placeholder determinístico até integrarmos o GraphQL.
+
 const BASE_DATE_MS = Date.parse('2025-06-01T00:00:00Z');
 
 function hashSeed(seed: string): number {
@@ -13,7 +13,7 @@ function hashSeed(seed: string): number {
     h ^= seed.charCodeAt(i);
     h = Math.imul(h, 16777619);
   }
-  return (h >>> 0) || 1;
+  return h >>> 0 || 1;
 }
 
 function levelFrom(r: number): ContributionLevel {
@@ -24,7 +24,6 @@ function levelFrom(r: number): ContributionLevel {
   return 4;
 }
 
-/** Gera ~140 dias de contribuição determinísticos a partir de uma seed (ex.: login). */
 export function generatePlaceholderContributions(seed: string): ContributionDay[] {
   let state = hashSeed(seed);
   const rand = (): number => {

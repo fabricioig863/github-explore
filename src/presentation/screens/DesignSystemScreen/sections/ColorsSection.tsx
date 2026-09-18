@@ -4,7 +4,6 @@ import type { Theme } from 'src/infra/theme/lightTheme';
 
 import { ShowBlock } from '../components/ShowBlock';
 
-// Tokens semânticos — reagem ao tema (não usamos hex cru).
 const SWATCHES: (keyof Theme['colors'])[] = [
   'fg',
   'fgMuted',

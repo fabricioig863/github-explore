@@ -5,43 +5,17 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "paths": {
-      "@/domain/*": [
-        "./src/domain/*"
-      ],
-      "@/application/*": [
-        "./src/application/*"
-      ],
-      "@/infrastructure/*": [
-        "./src/infra/*"
-      ],
-      "@/presentation/*": [
-        "./src/presentation/*"
-      ],
-      "@/*": [
-        "./src/*"
-      ],
-      "@/assets/*": [
-        "./assets/*"
-      ],
-      "src/*": [
-        "./src/*"
-      ],
-      "assets/*": [
-        "./assets/*"
-      ]
+      "@/domain/*": ["./src/domain/*"],
+      "@/application/*": ["./src/application/*"],
+      "@/infrastructure/*": ["./src/infra/*"],
+      "@/presentation/*": ["./src/presentation/*"],
+      "@/*": ["./src/*"],
+      "@/assets/*": ["./assets/*"],
+      "src/*": ["./src/*"],
+      "assets/*": ["./assets/*"]
     },
-    "types": [
-      "jest"
-    ]
+    "types": ["jest"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "plugins"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": ["node_modules", "plugins"]
 }

@@ -6,9 +6,9 @@ type PillIcon = ComponentType<{ size?: number; color?: string }>;
 export interface PillDef {
   id: string;
   label: string;
-  /** Query crua passada ao repoQueries.search (buildSearchQuery a refina depois). */
+
   query: string;
-  /** Ícone opcional renderizado à esquerda (cor decidida pelo PillRow conforme seleção). */
+
   Icon?: PillIcon;
 }
 

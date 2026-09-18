@@ -85,7 +85,6 @@ describe('categorizeRepo', () => {
 
   describe('um repo pertence a no máximo uma coleção', () => {
     it('resolve empate pela ordem de COLLECTION_RULES', () => {
-      // Casa em Web (react) e em Mobile (react-native). Mobile vem antes.
       expect(categorizeRepo(input({ topics: ['react', 'react-native'] }))).toBe('mobile');
     });
 

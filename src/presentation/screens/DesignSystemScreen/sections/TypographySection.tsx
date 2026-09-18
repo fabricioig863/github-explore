@@ -3,7 +3,6 @@ import { Text } from '@/presentation/design-system/primitives/Text';
 
 import { ShowBlock } from '../components/ShowBlock';
 
-// Extra (não está no mockup) — amostra de cada variant tipográfica.
 export function TypographySection() {
   return (
     <ShowBlock title="Tipografia">

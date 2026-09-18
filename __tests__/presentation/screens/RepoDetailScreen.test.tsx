@@ -136,8 +136,7 @@ describe('RepoDetailScreen', () => {
     await screen.findByText('hello-world');
     await waitFor(() => {
       const last = setOptions.mock.calls.at(-1)?.[0] as
-        | { headerRight: () => ReactElement | null }
-        | undefined;
+        { headerRight: () => ReactElement | null } | undefined;
       expect(last?.headerRight()).not.toBeNull();
     });
 
@@ -172,8 +171,7 @@ describe('RepoDetailScreen', () => {
     await screen.findByText('hello-world');
     await waitFor(() => {
       const last = setOptions.mock.calls.at(-1)?.[0] as
-        | { headerRight: () => ReactElement | null }
-        | undefined;
+        { headerRight: () => ReactElement | null } | undefined;
       expect(last?.headerRight()).not.toBeNull();
     });
 
@@ -196,8 +194,7 @@ describe('RepoDetailScreen', () => {
     await screen.findByText('hello-world');
     await waitFor(() => {
       const last = setOptions.mock.calls.at(-1)?.[0] as
-        | { headerRight: () => ReactElement | null }
-        | undefined;
+        { headerRight: () => ReactElement | null } | undefined;
       expect(last?.headerRight()).not.toBeNull();
     });
 

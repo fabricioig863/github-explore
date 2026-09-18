@@ -13,7 +13,13 @@ describe('useExplorePills', () => {
   it('expõe as 5 pills na ordem do mockup', () => {
     const { result } = renderHook(() => useExplorePills());
 
-    expect(result.current.pills.map((p) => p.id)).toEqual(['trending', 'mobile', 'ts', 'rust', 'ai']);
+    expect(result.current.pills.map((p) => p.id)).toEqual([
+      'trending',
+      'mobile',
+      'ts',
+      'rust',
+      'ai',
+    ]);
   });
 
   it('select troca o id e a query reflete a pill selecionada', () => {

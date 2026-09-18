@@ -1,7 +1,3 @@
-// Mock compartilhado do expo-router. As telas leem navegação e parâmetros de
-// rota por hooks, então o teste controla os dois por aqui em vez de injetar
-// props. Os objetos são estáveis entre renders, o que mantém válidas as
-// dependências de useCallback e useLayoutEffect nas telas.
 export const routerMock = {
   push: jest.fn(),
   replace: jest.fn(),

@@ -7,7 +7,6 @@ const FETCH_PER_PAGE = 30;
 export class GetTopUserReposUseCase {
   constructor(private readonly listUserReposUseCase: ListUserReposUseCase) {}
 
-  // GitHub REST não expõe "pinned"; aproximamos pelos repos com mais estrelas.
   async execute(login: string, limit = DEFAULT_LIMIT): Promise<Repository[]> {
     const { items } = await this.listUserReposUseCase.execute({
       login,

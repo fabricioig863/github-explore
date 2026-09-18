@@ -21,8 +21,7 @@ const THUMB_COLOR = '#ffffff';
 
 export function ThemeToggleButton({ isDark, onToggle }: ThemeToggleButtonProps) {
   const theme = useTheme<Theme>();
-  // Inicializador lazy do useState: valor estável entre renders sem ler
-  // .current durante o render, proibido sob o React Compiler.
+
   const [thumbX] = useState(() => new Animated.Value(isDark ? THUMB_END : 0));
   const [scale] = useState(() => new Animated.Value(1));
   const [rotate] = useState(() => new Animated.Value(0));

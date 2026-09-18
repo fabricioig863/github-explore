@@ -33,7 +33,6 @@ jest.mock('react-native-safe-area-context', () => {
 
 const listMock = container.listSavedReposUseCase.execute as jest.Mock;
 
-
 describe('SavedScreen', () => {
   beforeEach(() => {
     resetExpoRouterMock();
@@ -54,8 +53,6 @@ describe('SavedScreen', () => {
   });
 
   it('renders the five pre-defined collections with their counts', async () => {
-    // fullName/name neutros: a fixture padrão é react-native e cairia em Mobile
-    // pelo nome, mascarando a contagem por linguagem que este teste verifica.
     const neutral = { fullName: 'alguem/coisa', name: 'coisa', ownerLogin: 'alguem' };
     listMock.mockResolvedValueOnce([
       makeSavedRepo({ ...neutral, id: 1, language: 'Swift' }),

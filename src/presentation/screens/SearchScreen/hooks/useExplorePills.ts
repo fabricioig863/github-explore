@@ -6,7 +6,7 @@ interface UseExplorePills {
   pills: readonly PillDef[];
   selectedId: string;
   select: (id: string) => void;
-  /** Query da pill selecionada (string vazia se nada selecionado). */
+
   query: string;
 }
 

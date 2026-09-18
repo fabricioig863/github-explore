@@ -42,9 +42,7 @@ describe('RepoListItem', () => {
   });
 
   it('shows raw count when stars < 1000', () => {
-    renderWithProviders(
-      <RepoListItem repo={makeRepository({ stars: 42 })} onPress={jest.fn()} />,
-    );
+    renderWithProviders(<RepoListItem repo={makeRepository({ stars: 42 })} onPress={jest.fn()} />);
 
     expect(screen.getByText('42')).toBeTruthy();
   });

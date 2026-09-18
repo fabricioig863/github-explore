@@ -8,10 +8,6 @@ import {
 
 import { makeSavedRepo } from '../../test-utils/fixtures/savedRepo.fixture';
 
-// A fixture padrão é facebook/react-native, que casa "mobile" pelo nome. Os
-// testes de agregação abaixo precisam de repos neutros para que só o campo sob
-// teste decida a coleção — as regras em si são cobertas em
-// __tests__/domain/repoCategorization.test.ts.
 function neutralRepo(overrides: Parameters<typeof makeSavedRepo>[0]) {
   return makeSavedRepo({
     fullName: 'alguem/coisa',

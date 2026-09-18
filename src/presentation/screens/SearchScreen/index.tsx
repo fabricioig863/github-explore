@@ -32,7 +32,6 @@ export function SearchScreen() {
   const [typed, setTyped] = useState('');
   const { pills, selectedId, select, query: pillQuery } = useExplorePills();
 
-  // Busca livre (>= 2 chars) sobrepõe o filtro de pill; senão usa a pill selecionada.
   const typedQuery = typed.trim();
   const effectiveQuery = typedQuery.length >= MIN_QUERY_LENGTH ? typedQuery : pillQuery;
   const debouncedQuery = useDebounce(effectiveQuery, DEBOUNCE_MS);
@@ -111,9 +110,7 @@ export function SearchScreen() {
         ListHeaderComponent={
           totalCount !== undefined ? (
             <Box paddingBottom="md">
-              <Text variant="caption">
-                Top resultados · {totalCount.toLocaleString('pt-BR')}
-              </Text>
+              <Text variant="caption">Top resultados · {totalCount.toLocaleString('pt-BR')}</Text>
             </Box>
           ) : null
         }

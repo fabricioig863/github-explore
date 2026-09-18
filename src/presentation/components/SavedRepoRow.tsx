@@ -23,12 +23,7 @@ export function SavedRepoRow({ repo, onPress }: SavedRepoRowProps) {
         <Avatar uri={repo.ownerAvatarUrl} login={repo.ownerLogin} size="md" />
         <Box flex={1} gap="xs" style={{ minWidth: 0 }}>
           <Box flexDirection="row" alignItems="center" gap="xs">
-            <Text
-              variant="bodySmall"
-              color="fgMuted"
-              numberOfLines={1}
-              style={{ flexShrink: 1 }}
-            >
+            <Text variant="bodySmall" color="fgMuted" numberOfLines={1} style={{ flexShrink: 1 }}>
               {repo.ownerLogin}
             </Text>
             <Text variant="bodySmall" color="fgSubtle">

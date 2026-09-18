@@ -60,9 +60,7 @@ export function CollectionsView({
           <Box flexDirection="row" alignItems="center" justifyContent="space-between">
             <Text variant="eyebrow">SUAS COLEÇÕES · {COLLECTIONS.length}</Text>
           </Box>
-          {/* Linhas de dois: os cards usam flex={1}, então uma linha ímpar
-              esticaria o último card na largura inteira. O Box vazio segura a
-              coluna vaga quando o total de coleções é ímpar. */}
+
           {COLLECTION_ROWS.map((row) => (
             <Box key={row.map((c) => c.id).join('-')} flexDirection="row" gap="md">
               {row.map((collection) => (

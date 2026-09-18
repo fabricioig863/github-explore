@@ -11,8 +11,6 @@ export interface CollectionMeta {
   glyph: string;
 }
 
-// Só aparência. Quem decide o que entra em cada coleção — e em que ordem de
-// prioridade — é COLLECTION_RULES, no domínio.
 const COLLECTION_APPEARANCE: Record<CollectionId, Omit<CollectionMeta, 'id'>> = {
   mobile: { title: 'Mobile', iconColor: '#5B6CFF', glyph: '☰' },
   backend: { title: 'Backend', iconColor: '#C53030', glyph: '▨' },
@@ -21,8 +19,6 @@ const COLLECTION_APPEARANCE: Record<CollectionId, Omit<CollectionMeta, 'id'>> = 
   'ai-ml': { title: 'AI & ML', iconColor: '#B7791F', glyph: '✪' },
 };
 
-// Ordem de exibição fixa, independente da ordem de prioridade das regras: a
-// prioridade muda conforme o mapeamento evolui, mas a grade não deve dançar.
 const DISPLAY_ORDER: readonly CollectionId[] = ['mobile', 'backend', 'web', 'tools', 'ai-ml'];
 
 export const COLLECTIONS: readonly CollectionMeta[] = DISPLAY_ORDER.map((id) => ({

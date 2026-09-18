@@ -36,7 +36,13 @@ describe('Pill', () => {
 
   it('com leftIcon e count (snapshot)', () => {
     const { toJSON } = renderWithProviders(
-      <Pill label="Trending" variant="filter" selected count={1500} leftIcon={<Star size={14} />} />,
+      <Pill
+        label="Trending"
+        variant="filter"
+        selected
+        count={1500}
+        leftIcon={<Star size={14} />}
+      />,
     );
     expect(toJSON()).toMatchSnapshot();
   });

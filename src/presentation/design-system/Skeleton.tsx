@@ -14,8 +14,6 @@ const MIN_OPACITY = 0.45;
 const MAX_OPACITY = 1;
 
 export function Skeleton({ width = '100%', height = 16, radius = 6 }: SkeletonProps) {
-  // Inicializador lazy do useState: roda uma vez, devolve valor estável entre
-  // renders e evita ler .current durante o render, proibido sob o React Compiler.
   const [opacity] = useState(() => new Animated.Value(MAX_OPACITY));
 
   useEffect(() => {

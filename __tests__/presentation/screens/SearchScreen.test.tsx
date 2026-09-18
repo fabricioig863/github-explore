@@ -14,9 +14,7 @@ jest.mock('src/infra/di/bootstrap', () => ({
 const executeMock = container.searchReposUseCase.execute as jest.Mock;
 
 function renderScreen() {
-  return renderWithProviders(
-    <SearchScreen />,
-  );
+  return renderWithProviders(<SearchScreen />);
 }
 
 describe('SearchScreen', () => {
@@ -61,7 +59,6 @@ describe('SearchScreen', () => {
       'openai/missing-repo',
     );
 
-    // Espera a descrição específica de path (a genérica do mount aparece antes).
     await screen.findByText(/owner\/repositório/, {}, { timeout: 2000 });
   });
 

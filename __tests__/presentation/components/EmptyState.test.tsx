@@ -12,9 +12,7 @@ describe('EmptyState', () => {
   });
 
   it('renders description when provided', () => {
-    renderWithProviders(
-      <EmptyState title="Sem resultados" description="Tente outra busca." />,
-    );
+    renderWithProviders(<EmptyState title="Sem resultados" description="Tente outra busca." />);
     expect(screen.getByText('Tente outra busca.')).toBeTruthy();
   });
 
@@ -26,10 +24,7 @@ describe('EmptyState', () => {
   it('renders the action node when provided', () => {
     const onTap = jest.fn();
     renderWithProviders(
-      <EmptyState
-        title="Erro"
-        action={<Text onPress={onTap}>Botão custom</Text>}
-      />,
+      <EmptyState title="Erro" action={<Text onPress={onTap}>Botão custom</Text>} />,
     );
     const btn = screen.getByText('Botão custom');
     fireEvent.press(btn);

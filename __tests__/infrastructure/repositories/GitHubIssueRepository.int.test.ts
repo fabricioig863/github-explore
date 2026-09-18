@@ -230,7 +230,11 @@ describe('GitHubIssueRepository (integração HTTP via msw)', () => {
         http.get(`${GITHUB_BASE_URL}/search/issues`, () => HttpResponse.json({}, { status: 404 })),
       );
 
-      const promise = new GitHubIssueRepository().count({ owner: 'foo', repo: 'bar', state: 'open' });
+      const promise = new GitHubIssueRepository().count({
+        owner: 'foo',
+        repo: 'bar',
+        state: 'open',
+      });
       await expect(promise).rejects.toBeInstanceOf(NotFoundError);
       await promise.catch((err: NotFoundError) => {
         expect(err.message).toContain('Contagem de issues de foo/bar');

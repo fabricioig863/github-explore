@@ -50,4 +50,3 @@ export function RepoListItem({ repo, onPress }: RepoListItemProps) {
     </Card>
   );
 }
-
