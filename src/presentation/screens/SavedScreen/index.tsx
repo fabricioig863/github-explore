@@ -20,6 +20,7 @@ import type { Theme } from 'src/infra/theme/lightTheme';
 import { CollectionsView } from './components/CollectionsView';
 import { RecentList } from './components/RecentList';
 import { SavedScreenSkeleton } from './components/SavedScreenSkeleton';
+import { useAnalytics, useTrackScreen } from '@/presentation/hooks/useAnalytics';
 
 type TabId = 'collections' | 'all' | 'recent';
 
@@ -29,6 +30,14 @@ export function SavedScreen() {
 
   const [tab, setTab] = useState<TabId>('collections');
   const [activeCollection, setActiveCollection] = useState<CollectionId | null>(null);
+
+  const analytics = useAnalytics();
+  useTrackScreen('saved');
+
+  const selectCollection = (id: CollectionId | null) => {
+    setActiveCollection(id);
+    if (id !== null) analytics.track({ name: 'collection_opened', collection: id });
+  };
 
   const { data: savedRepos = [], isLoading, error } = useQuery(savedQueries.list());
   const counts = useMemo(() => countByCollection(savedRepos), [savedRepos]);
@@ -80,7 +89,7 @@ export function SavedScreen() {
           totalCount={totalCount}
           savedRepos={savedRepos}
           activeCollection={activeCollection}
-          onSelectCollection={setActiveCollection}
+          onSelectCollection={selectCollection}
           renderRow={renderRow}
         />
       ) : tab === 'all' ? (

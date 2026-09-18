@@ -23,10 +23,13 @@ import type { Theme } from 'src/infra/theme/lightTheme';
 import { PhotoBlock } from './components/PhotoBlock';
 import { SettingGroup } from './components/SettingGroup';
 import { SettingRow } from './components/SettingRow';
+import { useTrackScreen } from '@/presentation/hooks/useAnalytics';
 
 const AVATAR_FALLBACK = `https://github.com/${DEFAULT_PROFILE_LOGIN}.png`;
 
 export function SettingsScreen() {
+  useTrackScreen('settings');
+
   const theme = useTheme<Theme>();
 
   const { data: prefs } = useQuery(preferencesQueries.user());

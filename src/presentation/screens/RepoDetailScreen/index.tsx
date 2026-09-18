@@ -19,12 +19,16 @@ import { RepoDetailSkeleton } from './components/RepoDetailSkeleton';
 import { RepoHero } from './components/RepoHero';
 import { RepoMeta } from './components/RepoMeta';
 import { StatsGrid } from './components/StatsGrid';
+import { useTrackEvent, useTrackScreen } from '@/presentation/hooks/useAnalytics';
 
 export function RepoDetailScreen() {
   const { owner, repo } = useLocalSearchParams<{ owner: string; repo: string }>();
   const navigation = useNavigation();
   const router = useRouter();
   const fullName = `${owner}/${repo}`;
+
+  useTrackScreen('repo_detail');
+  useTrackEvent({ name: 'repo_viewed', fullName });
 
   const { data, isLoading, error, refetch } = useQuery(repoQueries.details(owner, repo));
   const { data: openIssuesCount } = useQuery(issueQueries.count(owner, repo, 'open'));

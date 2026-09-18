@@ -17,6 +17,7 @@ import { issueQueries } from '@/presentation/query/collections/issueQueries';
 import { formatCount } from '@/presentation/utils/formatCount';
 import { getErrorMessage } from '@/presentation/utils/getErrorMessage';
 import type { Theme } from 'src/infra/theme/lightTheme';
+import { useTrackEvent, useTrackScreen } from '@/presentation/hooks/useAnalytics';
 
 type IssueState = 'open' | 'closed';
 
@@ -27,6 +28,9 @@ export function IssuesScreen() {
   const { owner, repo } = useLocalSearchParams<{ owner: string; repo: string }>();
   const theme = useTheme<Theme>();
   const [state, setState] = useState<IssueState>('open');
+
+  useTrackScreen('issues');
+  useTrackEvent({ name: 'issues_viewed', fullName: `${owner}/${repo}`, state });
 
   const {
     data,

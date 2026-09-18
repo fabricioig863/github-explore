@@ -21,12 +21,16 @@ import { ContributionsCard } from './components/ContributionsCard';
 import { PinnedRepoCard } from './components/PinnedRepoCard';
 import { ProfileHero } from './components/ProfileHero';
 import { ProfileSearch } from './components/ProfileSearch';
+import { useTrackEvent, useTrackScreen } from '@/presentation/hooks/useAnalytics';
 
 export function ProfileScreen() {
   const router = useRouter();
   const theme = useTheme<Theme>();
 
   const [login, setLogin] = useState(DEFAULT_PROFILE_LOGIN);
+
+  useTrackScreen('profile');
+  useTrackEvent({ name: 'profile_viewed', login });
 
   const profile = useQuery(userQueries.profile(login));
   const { data: topRepos, isLoading: isLoadingRepos } = useQuery(userQueries.topRepos(login));

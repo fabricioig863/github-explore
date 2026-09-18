@@ -14,8 +14,11 @@ import { CardAvatarSection } from './sections/CardAvatarSection';
 import { ColorsSection } from './sections/ColorsSection';
 import { InputsSection } from './sections/InputsSection';
 import { TypographySection } from './sections/TypographySection';
+import { useTrackScreen } from '@/presentation/hooks/useAnalytics';
 
 export function DesignSystemScreen() {
+  useTrackScreen('design_system');
+
   const theme = useTheme<Theme>();
   const { resolvedScheme, setMode } = useThemeMode();
   const isDark = resolvedScheme === 'dark';

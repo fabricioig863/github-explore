@@ -22,11 +22,14 @@ import type { Theme } from 'src/infra/theme/lightTheme';
 import { PillRow } from './components/PillRow';
 import { SearchHeader } from './components/SearchHeader';
 import { useExplorePills } from './hooks/useExplorePills';
+import { useTrackScreen } from '@/presentation/hooks/useAnalytics';
 
 const DEBOUNCE_MS = 300;
 const MIN_QUERY_LENGTH = 2;
 
 export function SearchScreen() {
+  useTrackScreen('explore');
+
   const router = useRouter();
   const theme = useTheme<Theme>();
   const [typed, setTyped] = useState('');
