@@ -41,14 +41,20 @@ Se você só quer **usar** o app, não precisa clonar nem compilar nada.
 | **Android**         | abra o link no celular e toque em _Install_        |
 | **iOS (Simulador)** | baixe o `.app` e arraste para o simulador no macOS |
 
-**[⬇️ Baixar o APK de Android](https://expo.dev/accounts/c4r3d4c4lur4/projects/github-explore/builds/f2714d17-51be-4c73-97a5-33f6b99cbf47)**
+**[⬇️ APK de Android](https://expo.dev/accounts/c4r3d4c4lur4/projects/github-explore/builds/f2714d17-51be-4c73-97a5-33f6b99cbf47)** ·
+**[⬇️ Build para o Simulador iOS](https://expo.dev/artifacts/eas/wYYyI9qyO4H-TJq3SKmkIM6rgM6tfHJT9d2dEvhB1K4.tar.gz)**
 
 No Android o sistema pede autorização para instalar de fonte desconhecida — é só aceitar
-uma vez. No iOS, com o simulador aberto:
+uma vez.
+
+No iOS, extraia o `.tar.gz` e, com o simulador já aberto:
 
 ```bash
 xcrun simctl install booted githubexplore.app
+xcrun simctl launch booted com.c4r3d4c4lur4.githubexplore
 ```
+
+Ou arraste o `.app` para a janela do simulador.
 
 ---
 
