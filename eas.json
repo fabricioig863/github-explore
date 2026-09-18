@@ -16,6 +16,12 @@
       "android": {
         "buildType": "app-bundle"
       }
+    },
+    "preview-ios": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
     }
   },
   "submit": {
