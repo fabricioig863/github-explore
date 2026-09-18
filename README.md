@@ -22,6 +22,8 @@ instale e rode.
   - [Categorização em coleções](#categorização-em-coleções)
 - [Testes](#testes)
 - [Scripts](#scripts)
+- [Bibliotecas e por que cada uma](#bibliotecas-e-por-que-cada-uma)
+- [Possíveis melhorias futuras](#possíveis-melhorias-futuras)
 
 ---
 
@@ -292,15 +294,137 @@ garantia — a UI é verificada por comportamento.
 
 ---
 
-## Stack
+## Bibliotecas e por que cada uma
 
-| Tecnologia                                 | Papel                             |
-| ------------------------------------------ | --------------------------------- |
-| Expo SDK 57 / React Native 0.86 / React 19 | plataforma e runtime              |
-| expo-router                                | roteamento por arquivos           |
-| TypeScript (strict)                        | tipagem, sem `any`                |
-| TanStack Query                             | cache e estado de servidor        |
-| Restyle                                    | design system tipado sobre o tema |
-| axios                                      | cliente HTTP                      |
-| Jest + Testing Library + msw               | testes                            |
-| eslint-plugin-boundaries                   | fronteiras da arquitetura         |
+### Plataforma
+
+**Expo SDK 57 / React Native 0.86 / React 19** — o Expo entrega o ciclo de build nativo
+(prebuild, EAS) e o acesso a APIs de aparelho sem gerenciar Xcode e Gradle à mão. O projeto
+não usa Expo Go: `android/` e `ios/` são gerados por Continuous Native Generation a partir
+do `app.json`, então nada nativo é versionado e a configuração vive num arquivo só.
+
+**expo-router** — roteamento por arquivos. Escolhido sobre o React Navigation puro por
+dois motivos práticos: deep linking sai de graça (cada arquivo é uma URL) e o
+`typedRoutes` gera tipos das rotas, então um `router.push` para uma rota inexistente
+quebra no `tsc`, não em runtime.
+
+**TypeScript em modo strict**, com `noUncheckedIndexedAccess` e `noImplicitOverride`
+ligados. Sem `any` em nenhum ponto do código. O `noUncheckedIndexedAccess` é o que força
+tratar `array[0]` como possivelmente indefinido — chato de início, mas elimina uma classe
+inteira de crash em lista vazia.
+
+### Dados e estado
+
+**@tanstack/react-query** — todo o estado de servidor. Traz de fábrica o que seria
+reescrito à mão: cache por chave, deduplicação de requests simultâneas, revalidação,
+estados de `loading`/`error` e **paginação infinita** (`useInfiniteQuery`, usado na busca).
+Não há Redux nem Context global para dados: estado de servidor não é estado de aplicação, e
+tratá-los como a mesma coisa é o que costuma inflar esse tipo de projeto.
+
+**axios** — cliente HTTP. Preferido ao `fetch` pelos **interceptors**, que são o ponto onde
+o token opcional é injetado e onde o timeout é aplicado de forma centralizada. Com `fetch`
+puro isso viraria um wrapper manual em todo request.
+
+**@react-native-async-storage/async-storage** — persistência dos repositórios salvos e das
+preferências. É chave-valor simples, que é exatamente a forma do dado; um SQLite aqui seria
+peso sem retorno.
+
+**expo-secure-store** — guarda o Personal Access Token opcional. Usa Keychain no iOS e
+EncryptedSharedPreferences no Android. Token nunca entra no AsyncStorage, que é texto puro.
+
+### Interface
+
+**@shopify/restyle** — design system tipado. Os componentes recebem `backgroundColor="bg"`
+e `padding="huge"` em vez de valores soltos, e o TypeScript recusa um token que não exista
+no tema. É o que sustenta o tema claro/escuro sem `if (isDark)` espalhado pelas telas.
+
+**lucide-react-native** — ícones em SVG, com peso por ícone e a mesma API no conjunto todo.
+
+**react-native-svg** + **react-native-svg-transformer** — permite `import Ilustracao from
+'./x.svg'` como componente React, mantendo a ilustração vetorial em vez de PNG em três
+densidades.
+
+**@expo-google-fonts/geist** e **geist-mono** — tipografia. A monoespaçada é usada nos
+metadados (datas, contadores) para alinhar em coluna.
+
+**date-fns** — datas relativas ("salvo há 2 dias") com locale pt-BR. Escolhida sobre o
+Moment por ser modular: entra no bundle só a função importada.
+
+**react-native-safe-area-context**, **react-native-screens**,
+**react-native-gesture-handler**, **react-native-reanimated** — peers do expo-router e do
+React Navigation. Não são importados diretamente pelo código da aplicação.
+
+### Qualidade
+
+**Jest + jest-expo** — runner configurado para o ambiente React Native.
+
+**@testing-library/react-native** — testes de componente por comportamento e
+acessibilidade (`getByText`, `getByLabelText`), não por estrutura interna. Um teste assim
+sobrevive a refatoração de layout.
+
+**msw** — simula a API do GitHub **no nível do HTTP**, e não mockando o axios. A diferença
+importa: os testes de repositório exercitam o cliente real, os interceptors e o mapeamento
+de erros. Mockar o axios testaria só o mock.
+
+**eslint-plugin-boundaries** — transforma a regra de dependência da arquitetura em erro de
+lint. Sem isso, "domain não importa de infra" é um acordo verbal que a primeira pressa
+quebra.
+
+**@typescript-eslint**, **eslint-plugin-import**, **eslint-config-expo**, **prettier** —
+lint e formatação.
+
+**reactotron-react-native** — inspeção de requests e estado durante o desenvolvimento.
+Neutralizado no bundle web por um stub `.web.ts`, porque a biblioteca toca em módulos
+nativos que não existem fora do aparelho.
+
+### Módulos do Expo
+
+**expo-image-picker** abre a galeria para trocar o avatar local. **expo-splash-screen**
+segura a splash até as fontes carregarem, evitando o flash de texto sem fonte.
+**expo-build-properties** é config plugin, usado para adotar o ciclo de vida de cena
+exigido pelo SDK do iOS 27. **expo-constants**, **expo-font**, **expo-linking**,
+**expo-status-bar** e **expo-system-ui** entram como dependências do expo-router e do
+próprio runtime.
+
+**react-dom** e **react-native-web** existem porque o Expo compila o projeto para web
+também. A web não é alvo do app, mas o bundle precisa montar — há um teste implícito de
+sanidade nisso: código que quebra no web costuma ser código que toca em nativo sem
+proteção.
+
+---
+
+## Possíveis melhorias futuras
+
+Em ordem aproximada de retorno sobre esforço.
+
+**Observabilidade.** Não há hoje nenhuma visibilidade do que acontece em produção.
+Crashlytics para relatórios de crash e eventos de analytics nas ações principais (busca,
+salvar, abrir detalhe) entrariam como porta no domínio e adaptador na infraestrutura,
+mantendo a regra de dependência.
+
+**Atualizações OTA.** Sem `expo-updates`, qualquer correção exige build nova. Para um app
+cuja lógica é quase toda JavaScript, é o ganho isolado mais óbvio.
+
+**Contribuições reais no perfil.** O gráfico é gerado localmente porque a REST API pública
+não expõe esses dados. A GraphQL API do GitHub expõe, via `contributionsCollection`, mas
+exige autenticação — daria para habilitar apenas quando houver token configurado.
+
+**Cache offline.** O React Query mantém cache em memória, que morre ao fechar o app.
+Persistir com `@tanstack/query-persist-client` faria a lista abrir instantaneamente e
+funcionar sem rede.
+
+**Coleções editáveis pelo usuário.** Hoje as regras de categorização são fixas no código.
+Deixar criar coleções e arrastar repositórios entre elas transformaria uma heurística numa
+funcionalidade — com o detalhe de que a regra automática viraria só a sugestão inicial.
+
+**Testes end-to-end.** A suíte cobre unidade e integração, mas ninguém verifica o app
+rodando de verdade. Maestro ou Detox cobririam os fluxos principais em aparelho.
+
+**Acessibilidade.** Os elementos interativos têm `accessibilityLabel` e `accessibilityRole`,
+mas falta auditoria com leitor de tela e verificação de contraste nos dois temas.
+
+**Virtualização de listas.** As listas usam `FlatList`. Com centenas de itens salvos,
+`FlashList` reduziria o custo de renderização — ainda não é um problema no volume atual.
+
+**Internacionalização.** A interface está fixa em pt-BR. Extrair as strings para um
+dicionário é pré-requisito para qualquer idioma adicional.
