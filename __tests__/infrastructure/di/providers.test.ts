@@ -1,5 +1,4 @@
 import {
-  provideAuthRepository,
   provideIssueRepository,
   provideRepoRepository,
   provideSavedReposRepository,
@@ -74,18 +73,6 @@ describe('di/providers', () => {
     it('retorna AsyncStorageSavedReposRepository quando USE_MOCK=false', () => {
       const repo = provideSavedReposRepository({ USE_MOCK: false });
       expect(repo.constructor.name).toBe('AsyncStorageSavedReposRepository');
-    });
-  });
-
-  describe('provideAuthRepository', () => {
-    it('retorna InMemoryAuthRepository quando USE_MOCK=true', () => {
-      const repo = provideAuthRepository({ USE_MOCK: true });
-      expect(repo.constructor.name).toBe('InMemoryAuthRepository');
-    });
-
-    it('retorna GitHubAuthRepository quando USE_MOCK=false', () => {
-      const repo = provideAuthRepository({ USE_MOCK: false });
-      expect(repo.constructor.name).toBe('GitHubAuthRepository');
     });
   });
 

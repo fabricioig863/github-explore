@@ -51,9 +51,7 @@ describe('mapIssue', () => {
   });
 
   it('preserves label color hex without "#" prefix', () => {
-    const result = mapIssue(
-      makeDto({ labels: [{ id: 99, name: 'feature', color: 'a2eeef' }] }),
-    );
+    const result = mapIssue(makeDto({ labels: [{ id: 99, name: 'feature', color: 'a2eeef' }] }));
     expect(result.labels[0]?.color).toBe('a2eeef');
     expect(result.labels[0]?.color).not.toMatch(/^#/);
   });

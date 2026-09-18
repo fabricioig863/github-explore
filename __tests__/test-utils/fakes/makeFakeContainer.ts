@@ -13,11 +13,9 @@ export const makeFakeContainer = (): FakeContainer => ({
   saveRepoUseCase: { execute: jest.fn() },
   unsaveRepoUseCase: { execute: jest.fn() },
   isRepoSavedUseCase: { execute: jest.fn() },
-  signInWithGithubUseCase: { execute: jest.fn() },
-  signOutUseCase: { execute: jest.fn() },
-  getCurrentSessionUseCase: { execute: jest.fn() },
   listUserReposUseCase: { execute: jest.fn() },
   getTopUserReposUseCase: { execute: jest.fn() },
+  getUserProfileUseCase: { execute: jest.fn() },
   getUserPreferencesUseCase: { execute: jest.fn() },
   updateUserPreferencesUseCase: { execute: jest.fn() },
 });

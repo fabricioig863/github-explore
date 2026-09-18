@@ -12,7 +12,6 @@ interface ContributionsCardProps {
   days: ContributionDay[];
 }
 
-// Alpha do accent por nível (0 = vazio usa surfaceMuted).
 const LEVEL_ALPHA: Record<Exclude<ContributionLevel, 0>, string> = {
   1: '40',
   2: '80',

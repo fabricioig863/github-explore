@@ -1,9 +1,9 @@
-import type { AuthenticatedUser } from '@/domain/entities/AuthenticatedUser';
+import type { GitHubUser } from '@/domain/entities/GitHubUser';
 import { ProfileHero } from '@/presentation/screens/ProfileScreen/components/ProfileHero';
 
 import { renderWithProviders } from '../../test-utils/renderWithProviders';
 
-const USER: AuthenticatedUser = {
+const USER: GitHubUser = {
   id: 1,
   login: 'octocat',
   name: 'The Octocat',

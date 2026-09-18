@@ -1,12 +1,12 @@
-import type { AuthenticatedUser } from '@/domain/entities/AuthenticatedUser';
+import type { GitHubUser } from '@/domain/entities/GitHubUser';
 import { Avatar } from '@/presentation/design-system/Avatar';
 import { Box } from '@/presentation/design-system/primitives/Box';
 import { Text } from '@/presentation/design-system/primitives/Text';
 import { formatCount } from '@/presentation/utils/formatCount';
 
 interface ProfileHeroProps {
-  user: AuthenticatedUser;
-  /** Sobrepõe o avatar do GitHub (avatar local das preferências). */
+  user: GitHubUser;
+
   avatarUri?: string;
 }
 

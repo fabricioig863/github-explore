@@ -103,3 +103,70 @@ describe('GitHubUserRepository (integração HTTP via msw)', () => {
     });
   });
 });
+
+describe('GitHubUserRepository.getUser', () => {
+  it('mapeia o perfil público de /users/{login}', async () => {
+    server.use(
+      http.get(`${GITHUB_BASE_URL}/users/octocat`, () =>
+        HttpResponse.json({
+          id: 583231,
+          login: 'octocat',
+          name: 'The Octocat',
+          email: null,
+          avatar_url: 'https://github.com/octocat.png',
+          bio: 'Mascote',
+          public_repos: 8,
+          followers: 9999,
+          following: 9,
+        }),
+      ),
+    );
+
+    const user = await new GitHubUserRepository().getUser('octocat');
+
+    expect(user).toEqual({
+      id: 583231,
+      login: 'octocat',
+      name: 'The Octocat',
+      email: null,
+      avatarUrl: 'https://github.com/octocat.png',
+      bio: 'Mascote',
+      publicReposCount: 8,
+      followers: 9999,
+      following: 9,
+    });
+  });
+
+  it('trata email ausente no payload público como null', async () => {
+    server.use(
+      http.get(`${GITHUB_BASE_URL}/users/octocat`, () =>
+        HttpResponse.json({
+          id: 1,
+          login: 'octocat',
+          name: null,
+          avatar_url: 'https://x/a.png',
+          bio: null,
+          public_repos: 0,
+          followers: 0,
+          following: 0,
+        }),
+      ),
+    );
+
+    const user = await new GitHubUserRepository().getUser('octocat');
+
+    expect(user.email).toBeNull();
+  });
+
+  it('converte 404 em NotFoundError', async () => {
+    server.use(
+      http.get(`${GITHUB_BASE_URL}/users/fantasma`, () =>
+        HttpResponse.json({ message: 'Not Found' }, { status: 404 }),
+      ),
+    );
+
+    await expect(new GitHubUserRepository().getUser('fantasma')).rejects.toBeInstanceOf(
+      NotFoundError,
+    );
+  });
+});

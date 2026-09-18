@@ -1,8 +1,8 @@
-import { mapAuthenticatedUser } from 'src/infra/http/mappers/authMapper';
+import { mapGitHubUser } from 'src/infra/http/mappers/userMapper';
 
 describe('authMapper', () => {
   it('mapeia snake_case -> camelCase incluindo os campos de perfil', () => {
-    const user = mapAuthenticatedUser({
+    const user = mapGitHubUser({
       id: 1,
       login: 'octocat',
       name: 'The Octocat',
@@ -28,7 +28,7 @@ describe('authMapper', () => {
   });
 
   it('propaga null em name/email/bio sem coagir', () => {
-    const user = mapAuthenticatedUser({
+    const user = mapGitHubUser({
       id: 2,
       login: 'ghost',
       name: null,

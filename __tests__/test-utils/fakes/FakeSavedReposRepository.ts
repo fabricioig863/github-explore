@@ -8,11 +8,7 @@ export class FakeSavedReposRepository implements ISavedReposRepository {
   unsave: jest.Mock<Promise<void>, [string]>;
   isSaved: jest.Mock<Promise<boolean>, [string]>;
 
-  constructor(defaults?: {
-    list?: SavedRepo[];
-    save?: SavedRepo;
-    isSaved?: boolean;
-  }) {
+  constructor(defaults?: { list?: SavedRepo[]; save?: SavedRepo; isSaved?: boolean }) {
     this.list = jest.fn().mockResolvedValue(defaults?.list ?? []);
     this.save = jest.fn().mockResolvedValue(defaults?.save);
     this.unsave = jest.fn().mockResolvedValue(undefined);

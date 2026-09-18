@@ -1,3 +1,4 @@
+import type { GitHubUser } from '@/domain/entities/GitHubUser';
 import type { Repository } from '@/domain/entities/Repository';
 import type { IUserRepository, ListUserReposParams } from '@/domain/repositories/IUserRepository';
 import type { PaginatedResult } from '@/domain/repositories/Pagination';
@@ -15,6 +16,22 @@ function randomLatency(): number {
 }
 
 export class InMemoryUserRepository implements IUserRepository {
+  async getUser(login: string): Promise<GitHubUser> {
+    await delay(randomLatency());
+
+    return {
+      id: 583231,
+      login,
+      name: 'The Octocat',
+      email: null,
+      avatarUrl: 'https://avatars.githubusercontent.com/u/583231?v=4',
+      bio: 'Mascote do GitHub. Perfil fictício para desenvolvimento.',
+      publicReposCount: REPOS_FIXTURE.length,
+      followers: 9999,
+      following: 9,
+    };
+  }
+
   async listUserRepos({
     page,
     perPage,

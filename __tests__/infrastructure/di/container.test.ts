@@ -1,4 +1,3 @@
-import type { IAuthRepository } from '@/domain/repositories/IAuthRepository';
 import type { IIssueRepository } from '@/domain/repositories/IIssueRepository';
 import type { IRepoRepository } from '@/domain/repositories/IRepoRepository';
 import type { ISavedReposRepository } from '@/domain/repositories/ISavedReposRepository';
@@ -29,16 +28,9 @@ function fakeSavedReposRepository(): ISavedReposRepository {
   } as unknown as ISavedReposRepository;
 }
 
-function fakeAuthRepository(): IAuthRepository {
-  return {
-    signIn: jest.fn(),
-    signOut: jest.fn(),
-    getCurrentSession: jest.fn(),
-  } as unknown as IAuthRepository;
-}
-
 function fakeUserRepository(): IUserRepository {
   return {
+    getUser: jest.fn(),
     listUserRepos: jest.fn(),
   } as unknown as IUserRepository;
 }
@@ -55,7 +47,6 @@ function makeDeps(overrides: Partial<ContainerDeps> = {}): ContainerDeps {
     repoRepository: fakeRepoRepository(),
     issueRepository: fakeIssueRepository(),
     savedReposRepository: fakeSavedReposRepository(),
-    authRepository: fakeAuthRepository(),
     userRepository: fakeUserRepository(),
     userPreferencesRepository: fakeUserPreferencesRepository(),
     ...overrides,
@@ -79,9 +70,6 @@ describe('createContainer', () => {
       expect(typeof c.saveRepoUseCase.execute).toBe('function');
       expect(typeof c.unsaveRepoUseCase.execute).toBe('function');
       expect(typeof c.isRepoSavedUseCase.execute).toBe('function');
-      expect(typeof c.signInWithGithubUseCase.execute).toBe('function');
-      expect(typeof c.signOutUseCase.execute).toBe('function');
-      expect(typeof c.getCurrentSessionUseCase.execute).toBe('function');
       expect(typeof c.listUserReposUseCase.execute).toBe('function');
       expect(typeof c.getTopUserReposUseCase.execute).toBe('function');
       expect(typeof c.getUserPreferencesUseCase.execute).toBe('function');
@@ -98,9 +86,7 @@ describe('createContainer', () => {
       expect(readInjectedRepo(c.getRepoDetailsUseCase, 'repoRepository')).toBe(deps.repoRepository);
 
       expect(readInjectedRepo(c.listIssuesUseCase, 'issueRepository')).toBe(deps.issueRepository);
-      expect(readInjectedRepo(c.countIssuesUseCase, 'issueRepository')).toBe(
-        deps.issueRepository,
-      );
+      expect(readInjectedRepo(c.countIssuesUseCase, 'issueRepository')).toBe(deps.issueRepository);
 
       expect(readInjectedRepo(c.listSavedReposUseCase, 'savedReposRepository')).toBe(
         deps.savedReposRepository,
@@ -113,12 +99,6 @@ describe('createContainer', () => {
       );
       expect(readInjectedRepo(c.isRepoSavedUseCase, 'savedReposRepository')).toBe(
         deps.savedReposRepository,
-      );
-
-      expect(readInjectedRepo(c.signInWithGithubUseCase, 'authRepository')).toBe(deps.authRepository);
-      expect(readInjectedRepo(c.signOutUseCase, 'authRepository')).toBe(deps.authRepository);
-      expect(readInjectedRepo(c.getCurrentSessionUseCase, 'authRepository')).toBe(
-        deps.authRepository,
       );
 
       expect(readInjectedRepo(c.listUserReposUseCase, 'userRepository')).toBe(deps.userRepository);

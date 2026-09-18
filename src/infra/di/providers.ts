@@ -1,4 +1,3 @@
-import type { IAuthRepository } from '@/domain/repositories/IAuthRepository';
 import type { IIssueRepository } from '@/domain/repositories/IIssueRepository';
 import type { IRepoRepository } from '@/domain/repositories/IRepoRepository';
 import type { ISavedReposRepository } from '@/domain/repositories/ISavedReposRepository';
@@ -6,11 +5,9 @@ import type { IUserPreferencesRepository } from '@/domain/repositories/IUserPref
 import type { IUserRepository } from '@/domain/repositories/IUserRepository';
 import { AsyncStorageSavedReposRepository } from 'src/infra/repositories/AsyncStorageSavedReposRepository';
 import { AsyncStorageUserPreferencesRepository } from 'src/infra/repositories/AsyncStorageUserPreferencesRepository';
-import { GitHubAuthRepository } from 'src/infra/repositories/GitHubAuthRepository';
 import { GitHubIssueRepository } from 'src/infra/repositories/GitHubIssueRepository';
 import { GitHubRepoRepository } from 'src/infra/repositories/GitHubRepoRepository';
 import { GitHubUserRepository } from 'src/infra/repositories/GitHubUserRepository';
-import { InMemoryAuthRepository } from 'src/infra/repositories/InMemoryAuthRepository';
 import { InMemoryIssueRepository } from 'src/infra/repositories/InMemoryIssueRepository';
 import { InMemoryRepoRepository } from 'src/infra/repositories/InMemoryRepoRepository';
 import { InMemorySavedReposRepository } from 'src/infra/repositories/InMemorySavedReposRepository';
@@ -33,9 +30,6 @@ export const provideIssueRepository = (env: DiEnv): IIssueRepository =>
 
 export const provideSavedReposRepository = (env: DiEnv): ISavedReposRepository =>
   env.USE_MOCK ? new InMemorySavedReposRepository() : new AsyncStorageSavedReposRepository();
-
-export const provideAuthRepository = (env: DiEnv): IAuthRepository =>
-  env.USE_MOCK ? new InMemoryAuthRepository() : new GitHubAuthRepository();
 
 export const provideUserRepository = (env: DiEnv): IUserRepository =>
   env.USE_MOCK ? new InMemoryUserRepository() : new GitHubUserRepository();

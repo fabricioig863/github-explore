@@ -1,8 +1,7 @@
 import { delay, http, HttpResponse } from 'msw';
 
 import { NetworkError } from '@/domain/errors/NetworkError';
-import * as secureTokenStorage from 'src/infra/auth/secureTokenStorage';
-import { sessionEvents } from 'src/infra/auth/sessionEvents';
+import * as accessTokenStorage from 'src/infra/auth/accessTokenStorage';
 import { mapHttpError } from 'src/infra/http/errorMapper';
 import { createHttpClient } from 'src/infra/http/httpClient';
 
@@ -39,13 +38,13 @@ describe('httpClient (integração HTTP via msw)', () => {
     });
   });
 
-  describe('autenticação via token da sessão (secureTokenStorage)', () => {
+  describe('autenticação via access token opcional (accessTokenStorage)', () => {
     afterEach(async () => {
-      await secureTokenStorage.clear();
+      await accessTokenStorage.clearToken();
     });
 
     it('NÃO envia Authorization quando não há token de sessão', async () => {
-      await secureTokenStorage.clear();
+      await accessTokenStorage.clearToken();
 
       let capturedAuth: string | null = null;
       server.use(
@@ -61,7 +60,7 @@ describe('httpClient (integração HTTP via msw)', () => {
     });
 
     it('envia Bearer <token> quando há token na sessão corrente', async () => {
-      await secureTokenStorage.setToken('gho_session_token_123');
+      await accessTokenStorage.setToken('gho_session_token_123');
 
       let capturedAuth: string | null = null;
       server.use(
@@ -86,47 +85,13 @@ describe('httpClient (integração HTTP via msw)', () => {
       );
       const client = createHttpClient();
 
-      await secureTokenStorage.setToken('first');
+      await accessTokenStorage.setToken('first');
       await client.get('/ping');
-      await secureTokenStorage.clear();
+      await accessTokenStorage.clearToken();
       await client.get('/ping');
 
       expect(captured[0]).toBe('Bearer first');
       expect(captured[1]).toBeNull();
-    });
-  });
-
-  describe('resposta 401 (token inválido/revogado)', () => {
-    afterEach(async () => {
-      await secureTokenStorage.clear();
-    });
-
-    it('emite sessionExpired e rejeita o erro', async () => {
-      const emitSpy = jest.spyOn(sessionEvents, 'emitSessionExpired');
-      server.use(
-        http.get(`${GITHUB_BASE_URL}/user`, () =>
-          HttpResponse.json({ message: 'Bad credentials' }, { status: 401 }),
-        ),
-      );
-
-      await expect(createHttpClient().get('/user')).rejects.toBeDefined();
-      expect(emitSpy).toHaveBeenCalledTimes(1);
-
-      emitSpy.mockRestore();
-    });
-
-    it('NÃO emite sessionExpired para respostas não-401', async () => {
-      const emitSpy = jest.spyOn(sessionEvents, 'emitSessionExpired');
-      server.use(
-        http.get(`${GITHUB_BASE_URL}/user`, () =>
-          HttpResponse.json({ message: 'forbidden' }, { status: 403 }),
-        ),
-      );
-
-      await expect(createHttpClient().get('/user')).rejects.toBeDefined();
-      expect(emitSpy).not.toHaveBeenCalled();
-
-      emitSpy.mockRestore();
     });
   });
 

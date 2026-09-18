@@ -10,10 +10,7 @@ export class FakeIssueRepository implements IIssueRepository {
   list: jest.Mock<Promise<PaginatedResult<Issue>>, [ListIssuesParams]>;
   count: jest.Mock<Promise<number>, [CountIssuesParams]>;
 
-  constructor(defaults?: {
-    list?: PaginatedResult<Issue>;
-    count?: number;
-  }) {
+  constructor(defaults?: { list?: PaginatedResult<Issue>; count?: number }) {
     const defaultPage: PaginatedResult<Issue> = defaults?.list ?? {
       items: [],
       totalCount: 0,

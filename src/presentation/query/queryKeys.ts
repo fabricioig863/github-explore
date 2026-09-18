@@ -13,10 +13,9 @@ export const queryKeys = {
   ],
   savedRepos: (): QueryKey => ['savedRepos'],
   isRepoSaved: (fullName: string): QueryKey => ['savedRepos', 'isSaved', fullName],
-  auth: {
-    session: (): QueryKey => ['auth', 'session'],
-  },
+  accessToken: (): QueryKey => ['accessToken'],
   users: {
+    profile: (login: string): QueryKey => ['users', login, 'profile'],
     topRepos: (login: string): QueryKey => ['users', login, 'topRepos'],
   },
   prefs: {
