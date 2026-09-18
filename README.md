@@ -8,6 +8,14 @@ lista de repositórios salvos localmente e organizados em coleções automática
 **Não precisa de login nem de configuração.** Toda a API consumida é pública: clone,
 instale e rode.
 
+|                                                           Explorar                                                            |                                                              Design System                                                               |                                                                  Salvos                                                                   |                                                             Perfil                                                             |
+| :---------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------: |
+| <img src="assets/images/preview/01-explorar.png" width="200" alt="Tela Explorar com busca e filtros rápidos por linguagem" /> | <img src="assets/images/preview/02-design-system.png" width="200" alt="Catálogo do design system com botões, inputs, badges e paleta" /> | <img src="assets/images/preview/03-salvos-colecoes.png" width="200" alt="Repositórios salvos agrupados nas cinco coleções automáticas" /> | <img src="assets/images/preview/04-perfil.png" width="200" alt="Perfil público com estatísticas e repositórios em destaque" /> |
+|                                                   busca com scroll infinito                                                   |                                                           tokens e componentes                                                           |                                                         categorização automática                                                          |                                                   qualquer usuário do GitHub                                                   |
+
+Na aba **Salvos** dá para ver a categorização em ação: `vercel/next.js` foi para **Web** e
+`microsoft/generative-ai-for-beginners` para **AI & ML**, sem intervenção manual.
+
 ---
 
 ## Índice
@@ -36,10 +44,10 @@ instale e rode.
 
 Se você só quer **usar** o app, não precisa clonar nem compilar nada.
 
-| Plataforma          | Como                                               |
-| ------------------- | -------------------------------------------------- |
-| **Android**         | abra o link no celular e toque em _Install_        |
-| **iOS (Simulador)** | baixe o `.app` e arraste para o simulador no macOS |
+| Plataforma          | Como                                           |
+| ------------------- | ---------------------------------------------- |
+| **Android**         | abra o link no celular e toque em _Install_    |
+| **iOS (Simulador)** | baixe o `.app` e instale com `simctl` no macOS |
 
 **[⬇️ APK de Android](https://expo.dev/accounts/c4r3d4c4lur4/projects/github-explore/builds/f2714d17-51be-4c73-97a5-33f6b99cbf47)** ·
 **[⬇️ Build para o Simulador iOS](https://expo.dev/artifacts/eas/wYYyI9qyO4H-TJq3SKmkIM6rgM6tfHJT9d2dEvhB1K4.tar.gz)**
@@ -389,7 +397,7 @@ desenvolvimento, sem abrir o painel.
 
 A integração foi validada em dois níveis: os eventos são emitidos, e chegam ao painel.
 
-![DebugView do Firebase recebendo os eventos do app](assets/firebase-debugview.png)
+![DebugView do Firebase recebendo os eventos do app](assets/images/preview/05-firebase-debugview.png)
 
 **Para verificar por conta própria, sem precisar de Firebase**, ligue o adaptador de
 console:
