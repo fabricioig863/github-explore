@@ -355,6 +355,63 @@ Três adaptadores, escolhidos em `providers.ts`:
 O adaptador de console é o caminho mais rápido para ver os eventos durante o
 desenvolvimento, sem abrir o painel.
 
+### Verificando que funciona
+
+A integração foi validada em dois níveis: os eventos são emitidos, e chegam ao painel.
+
+![DebugView do Firebase recebendo os eventos do app](assets/firebase-debugview.png)
+
+**Para verificar por conta própria, sem precisar de Firebase**, ligue o adaptador de
+console:
+
+```bash
+echo "EXPO_PUBLIC_DEBUG_ANALYTICS=true" >> .env
+pnpm start -c
+```
+
+Cada evento passa a ser impresso no terminal:
+
+```
+[analytics] screen_view { screen: 'explore' }
+[analytics] repo_searched { query: 'react', resultCount: 1210207 }
+[analytics] repo_saved { fullName: 'facebook/react', collection: 'web' }
+```
+
+Este roteiro exercita os sete eventos:
+
+| Ação                              | Evento esperado              |
+| --------------------------------- | ---------------------------- |
+| abrir o app                       | `screen_view`                |
+| buscar algo com 2+ letras         | `repo_searched`              |
+| abrir um repositório              | `repo_viewed`                |
+| tocar no marcador                 | `repo_saved`                 |
+| tocar de novo                     | `repo_unsaved`               |
+| abrir as issues e trocar o filtro | `issues_viewed` (duas vezes) |
+| aba Salvos → tocar numa coleção   | `collection_opened`          |
+| aba Perfil                        | `profile_viewed`             |
+
+**Para ver o painel real**, os eventos precisam chegar a um projeto Firebase ao qual você
+tenha acesso. O `google-services.json` versionado aponta para o projeto do autor, então ou
+peça acesso de leitura, ou crie um projeto próprio e substitua os dois arquivos de
+configuração. No Android, o DebugView exige ligar o modo de depuração antes:
+
+```bash
+adb shell setprop debug.firebase.analytics.app com.c4r3d4c4lur4.githubexplore
+```
+
+Sem isso os eventos vão em lote e só aparecem nos relatórios horas depois.
+
+### Uma característica da busca
+
+A busca tem debounce de 300 ms, então digitar com pausas naturais dispara uma consulta por
+pausa — e cada consulta emite um `repo_searched`. Digitar "react" devagar pode gerar quatro
+eventos.
+
+Isso é fiel ao que o app faz: cada evento corresponde a uma chamada real à API do GitHub.
+Mas infla a métrica em relação à intenção do usuário, que foi **uma** busca. Medir intenção
+exigiria um debounce próprio para o analytics, maior que o da busca — fica anotado em
+[melhorias futuras](#possíveis-melhorias-futuras).
+
 ### Configuração
 
 `google-services.json` (Android) e `GoogleService-Info.plist` (iOS) **são versionados**. Sem
@@ -519,6 +576,11 @@ funcionalidade — com o detalhe de que a regra automática viraria só a sugest
 
 **Testes end-to-end.** A suíte cobre unidade e integração, mas ninguém verifica o app
 rodando de verdade. Maestro ou Detox cobririam os fluxos principais em aparelho.
+
+**Medir intenção de busca, não consultas.** Hoje cada janela de debounce que fecha emite um
+`repo_searched`, então uma busca digitada devagar vira vários eventos. Um debounce próprio
+para o analytics — maior que os 300 ms da busca — mediria o que o usuário quis, não quantas
+vezes o app consultou a API.
 
 **Vazamento de handle no teardown do jest.** Depois que os 441 testes passam, o processo
 não encerra sozinho — algum recurso assíncrono fica aberto nos workers, em suítes de
