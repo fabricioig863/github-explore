@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 
 import { NetworkError } from '@/domain/errors/NetworkError';
-import { SearchScreen } from '@/presentation/screens/SearchScreen';
+import { SearchScreen } from '@/presentation/screens/SearchScreen/SearchScreen';
 import { container } from 'src/infra/di/bootstrap';
 
 import { makeRepository } from '../../test-utils/fixtures/repository.fixture';

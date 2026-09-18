@@ -1,1 +1,1 @@
-export { RepoDetailScreen as default } from '@/presentation/screens/RepoDetailScreen';
+export { RepoDetailScreen as default } from '@/presentation/screens/RepoDetailScreen/RepoDetailScreen';

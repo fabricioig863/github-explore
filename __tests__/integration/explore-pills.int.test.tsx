@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 
-import { SearchScreen } from '@/presentation/screens/SearchScreen';
+import { SearchScreen } from '@/presentation/screens/SearchScreen/SearchScreen';
 import { container } from 'src/infra/di/bootstrap';
 
 import { renderWithProviders } from '../test-utils/renderWithProviders';

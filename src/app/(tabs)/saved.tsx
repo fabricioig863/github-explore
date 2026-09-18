@@ -1,1 +1,1 @@
-export { SavedScreen as default } from '@/presentation/screens/SavedScreen';
+export { SavedScreen as default } from '@/presentation/screens/SavedScreen/SavedScreen';

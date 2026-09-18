@@ -104,21 +104,27 @@ describe('di/providers', () => {
 });
 
 describe('provideAnalytics e provideCrashReporter', () => {
-  it('sem DEBUG_ANALYTICS usam os adaptadores no-op', () => {
-    const env = { USE_MOCK: true, DEBUG_ANALYTICS: false };
-    expect(provideAnalytics(env).constructor.name).toBe('NoopAnalytics');
-    expect(provideCrashReporter(env).constructor.name).toBe('NoopCrashReporter');
-  });
-
-  it('com DEBUG_ANALYTICS usam os adaptadores de console', () => {
+  it('com DEBUG_ANALYTICS usam os adaptadores de console, mesmo fora do modo mock', () => {
     const env = { USE_MOCK: false, DEBUG_ANALYTICS: true };
     expect(provideAnalytics(env).constructor.name).toBe('ConsoleAnalytics');
     expect(provideCrashReporter(env).constructor.name).toBe('ConsoleCrashReporter');
   });
 
-  it('a escolha não depende de USE_MOCK: observabilidade é ortogonal aos mocks', () => {
-    expect(provideAnalytics({ USE_MOCK: true, DEBUG_ANALYTICS: false }).constructor.name).toBe(
-      provideAnalytics({ USE_MOCK: false, DEBUG_ANALYTICS: false }).constructor.name,
+  it('em modo mock usam no-op: os adaptadores reais dependem de módulo nativo', () => {
+    const env = { USE_MOCK: true, DEBUG_ANALYTICS: false };
+    expect(provideAnalytics(env).constructor.name).toBe('NoopAnalytics');
+    expect(provideCrashReporter(env).constructor.name).toBe('NoopCrashReporter');
+  });
+
+  it('fora do modo mock usam o Firebase', () => {
+    const env = { USE_MOCK: false, DEBUG_ANALYTICS: false };
+    expect(provideAnalytics(env).constructor.name).toBe('FirebaseAnalytics');
+    expect(provideCrashReporter(env).constructor.name).toBe('FirebaseCrashReporter');
+  });
+
+  it('DEBUG_ANALYTICS tem precedência sobre USE_MOCK', () => {
+    expect(provideAnalytics({ USE_MOCK: true, DEBUG_ANALYTICS: true }).constructor.name).toBe(
+      'ConsoleAnalytics',
     );
   });
 });

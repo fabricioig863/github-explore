@@ -1,10 +1,10 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 
-import { SavedScreen } from '@/presentation/screens/SavedScreen';
+import { SavedScreen } from '@/presentation/screens/SavedScreen/SavedScreen';
 import { container } from 'src/infra/di/bootstrap';
 
-import { makeSavedRepo } from '../../test-utils/fixtures/savedRepo.fixture';
 import { resetExpoRouterMock, routerMock } from '../../test-utils/expoRouter';
+import { makeSavedRepo } from '../../test-utils/fixtures/savedRepo.fixture';
 import { renderWithProviders } from '../../test-utils/renderWithProviders';
 
 jest.mock('src/infra/di/bootstrap', () => ({

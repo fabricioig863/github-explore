@@ -10,7 +10,8 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.c4r3d4c4lur4.githubexplore",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +22,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.c4r3d4c4lur4.githubexplore",
-      "edgeToEdgeEnabled": true
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",
@@ -48,10 +49,14 @@
         "expo-build-properties",
         {
           "ios": {
-            "enableSceneSupport": true
+            "enableSceneSupport": true,
+            "useFrameworks": "dynamic"
           }
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/analytics",
+      "@react-native-firebase/crashlytics"
     ],
     "experiments": {
       "typedRoutes": true,

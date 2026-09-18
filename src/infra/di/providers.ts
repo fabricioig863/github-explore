@@ -6,6 +6,10 @@ import type { ISavedReposRepository } from '@/domain/repositories/ISavedReposRep
 import type { IUserPreferencesRepository } from '@/domain/repositories/IUserPreferencesRepository';
 import type { IUserRepository } from '@/domain/repositories/IUserRepository';
 import { ConsoleAnalytics, ConsoleCrashReporter } from 'src/infra/observability/ConsoleAnalytics';
+import {
+  FirebaseAnalytics,
+  FirebaseCrashReporter,
+} from 'src/infra/observability/FirebaseAnalytics';
 import { NoopAnalytics, NoopCrashReporter } from 'src/infra/observability/NoopAnalytics';
 import { AsyncStorageSavedReposRepository } from 'src/infra/repositories/AsyncStorageSavedReposRepository';
 import { AsyncStorageUserPreferencesRepository } from 'src/infra/repositories/AsyncStorageUserPreferencesRepository';
@@ -45,8 +49,12 @@ export const provideUserPreferencesRepository = (env: DiEnv): IUserPreferencesRe
     ? new InMemoryUserPreferencesRepository()
     : new AsyncStorageUserPreferencesRepository();
 
-export const provideAnalytics = (env: DiEnv): IAnalytics =>
-  env.DEBUG_ANALYTICS ? new ConsoleAnalytics() : new NoopAnalytics();
+export const provideAnalytics = (env: DiEnv): IAnalytics => {
+  if (env.DEBUG_ANALYTICS) return new ConsoleAnalytics();
+  return env.USE_MOCK ? new NoopAnalytics() : new FirebaseAnalytics();
+};
 
-export const provideCrashReporter = (env: DiEnv): ICrashReporter =>
-  env.DEBUG_ANALYTICS ? new ConsoleCrashReporter() : new NoopCrashReporter();
+export const provideCrashReporter = (env: DiEnv): ICrashReporter => {
+  if (env.DEBUG_ANALYTICS) return new ConsoleCrashReporter();
+  return env.USE_MOCK ? new NoopCrashReporter() : new FirebaseCrashReporter();
+};
