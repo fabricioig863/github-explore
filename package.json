@@ -71,6 +71,7 @@
     "test:int": "jest --testPathPatterns='\\.int\\.test\\.'",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:ci": "jest --coverage --ci --forceExit",
     "reset-project": "node ./scripts/reset-project.js"
   },
   "private": true,

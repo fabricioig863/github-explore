@@ -384,9 +384,10 @@ Duas decisões que valem o registro:
 significaria três `pnpm install` — e como o repositório é privado, cada minuto sai da cota
 de 2.000/mês do plano free. Sequencial roda em ~3 minutos contra ~9.
 
-**`test:coverage` em vez de `test`.** Executa os mesmos testes, mas também aplica os
-thresholds. Se a cobertura do domínio cair de 100%, o CI falha — o número no README para de
-ser uma promessa e passa a ser uma trava.
+**`test:ci` em vez de `test`.** Roda com `--coverage`, então os thresholds valem: cobertura
+do domínio abaixo de 100% quebra a build, e o número no README deixa de ser promessa para
+virar trava. Leva também `--ci`, que impede a escrita de snapshots novos no runner, e
+`--forceExit`, pelo motivo descrito em [melhorias futuras](#possíveis-melhorias-futuras).
 
 O install usa `--frozen-lockfile`: se o `pnpm-lock.yaml` divergir do `package.json`, a
 build quebra em vez de resolver silenciosamente uma árvore diferente da local.
@@ -518,6 +519,13 @@ funcionalidade — com o detalhe de que a regra automática viraria só a sugest
 
 **Testes end-to-end.** A suíte cobre unidade e integração, mas ninguém verifica o app
 rodando de verdade. Maestro ou Detox cobririam os fluxos principais em aparelho.
+
+**Vazamento de handle no teardown do jest.** Depois que os 441 testes passam, o processo
+não encerra sozinho — algum recurso assíncrono fica aberto nos workers, em suítes de
+`integration` e `presentation`. O `test:ci` contorna com `--forceExit`, que mata o processo
+após o resultado. É dívida consciente: o vazamento está no teardown dos testes, não no app,
+e mascará-lo não afeta o que a suíte verifica. Mas o certo é achar o handle — `msw` e os
+timers do React Query são os suspeitos — e remover a flag.
 
 **Acessibilidade.** Os elementos interativos têm `accessibilityLabel` e `accessibilityRole`,
 mas falta auditoria com leitor de tela e verificação de contraste nos dois temas.
