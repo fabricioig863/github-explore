@@ -1,1 +1,1 @@
-export { IssuesScreen as default } from '@/presentation/screens/IssuesScreen';
+export { IssuesScreen as default } from '@/presentation/screens/IssuesScreen/IssuesScreen';
